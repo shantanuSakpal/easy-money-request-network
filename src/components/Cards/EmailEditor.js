@@ -7,9 +7,7 @@ import "react-quill-new/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 const EmailEditor = ({ recipientList }) => {
-  const [content, setContent] = useState(
-    "Use variables like this $name and draft a confirmation email for reciepent"
-  );
+  const [content, setContent] = useState("Hey $name! You have been paid!");
 
   const variables = recipientList[0];
 
@@ -34,7 +32,7 @@ const EmailEditor = ({ recipientList }) => {
       <h3 className={"font-semibold text-lg text-blueGray-700 mb-5"}>
         Draft Confirmation Email
       </h3>
-      <div className=" text-sm mb-2">
+      <div className="  mb-2">
         <span className="font-semibold text-blueGray-700">
           Available Variables:{" "}
         </span>
@@ -60,12 +58,10 @@ const EmailEditor = ({ recipientList }) => {
         className="bg-white"
       />
       <div className="mt-5">
-        <span className="text-sm font-semibold text-blueGray-700">
-          Email Preview:
-        </span>
+        <span className=" font-semibold text-blueGray-700">Email Preview:</span>
       </div>
       <div
-        className="mt-1"
+        className="mt-1 p-5 rounded-lg bg-white"
         dangerouslySetInnerHTML={{ __html: getProcessedContent() }}
       />
     </div>

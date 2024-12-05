@@ -26,6 +26,21 @@ export default function CardSettings({ recipientList, setRecipientList }) {
   };
 
   const handleSubmit = () => {
+    //check if fields are null
+    if (
+      formData.name === "" ||
+      formData.email === "" ||
+      formData.walletAddress === ""
+    ) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    if (formData.amount <= 0) {
+      alert("Please enter a valid amount");
+      return;
+    }
+
     setRecipientList((prev) => [...prev, formData]);
     setFormData({
       name: "",
@@ -40,6 +55,9 @@ export default function CardSettings({ recipientList, setRecipientList }) {
       notes: "",
       status: "pending",
     });
+
+    //scrool up
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleCSVUpload = (e) => {
@@ -113,7 +131,21 @@ export default function CardSettings({ recipientList, setRecipientList }) {
             <div className="w-full lg:w-6/12 px-4">
               <div className="relative w-full mb-3">
                 <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
-                  Wallet Address
+                  Name <span className="text-lg text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                />
+              </div>
+            </div>
+            <div className="w-full lg:w-6/12 px-4">
+              <div className="relative w-full mb-3">
+                <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
+                  Wallet Address <span className="text-lg text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -127,7 +159,7 @@ export default function CardSettings({ recipientList, setRecipientList }) {
             <div className="w-full lg:w-6/12 px-4">
               <div className="relative w-full mb-3">
                 <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
-                  Email address
+                  Email address <span className="text-lg text-red-500">*</span>
                 </label>
                 <input
                   type="email"
@@ -138,20 +170,7 @@ export default function CardSettings({ recipientList, setRecipientList }) {
                 />
               </div>
             </div>
-            <div className="w-full lg:w-6/12 px-4">
-              <div className="relative w-full mb-3">
-                <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                />
-              </div>
-            </div>
+
             <div className="w-full lg:w-6/12 px-4">
               <div className="relative w-full mb-3">
                 <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
@@ -184,8 +203,7 @@ export default function CardSettings({ recipientList, setRecipientList }) {
               </div>
             </div>
           </div>
-          <hr className="mt-6 border-b-1 border-blueGray-300" />
-          <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+          {/* <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
             Contact Information
           </h6>
           <div className="flex flex-wrap">
@@ -261,17 +279,17 @@ export default function CardSettings({ recipientList, setRecipientList }) {
                 ></textarea>
               </div>
             </div>
-          </div>
-          <div className="flex justify-end px-5">
-            <button
-              className="bg-lightBlue-500 text-white active:bg-lightBlue-600 font-bold uppercase  px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all duration-150 "
-              type="button"
-              onClick={handleSubmit}
-            >
-              Add
-            </button>
-          </div>
+          </div> */}
         </form>
+        <div className="flex justify-end px-5 mt-5">
+          <button
+            className="bg-lightBlue-500 text-white active:bg-lightBlue-600 font-bold uppercase  px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all duration-150 "
+            type="button"
+            onClick={handleSubmit}
+          >
+            Add to list
+          </button>
+        </div>
       </div>
     </div>
   );
