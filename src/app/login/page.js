@@ -6,7 +6,6 @@ import { app } from "@/config/firebase.js";
 export default function Login() {
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
-  disbursement;
 
   const handleGoogleSignIn = async () => {
     try {

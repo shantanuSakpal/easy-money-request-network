@@ -137,6 +137,7 @@ export default function Tables() {
           <CardInvoice
             invoiceData={invoiceData}
             setInvoiceData={setInvoiceData}
+            recipient={recipientList[0]}
           />
         )}
 
