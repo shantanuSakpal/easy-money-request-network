@@ -9,6 +9,7 @@ import { redirect, usePathname } from "next/navigation";
 import { app } from "@/config/firebase";
 import { useAuthStore } from "@/store/auth";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { BrandLogo } from "../BrandLogo";
 
 export default function Sidebar() {
   const auth = getAuth(app);
@@ -44,12 +45,7 @@ export default function Sidebar() {
             <i className="fas fa-bars"></i>
           </button>
           {/* Brand */}
-          <Link
-            className="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
-            href={"/"}
-          >
-            Easy Money
-          </Link>
+          <BrandLogo />
           {/* User */}
           <ul className="md:hidden items-center flex flex-wrap list-none">
             <li className="inline-block relative">
@@ -70,12 +66,7 @@ export default function Sidebar() {
             <div className="md:min-w-full md:hidden block pb-4 mb-4 border-b border-solid border-blueGray-200">
               <div className="flex flex-wrap">
                 <div className="w-6/12">
-                  <Link
-                    className="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
-                    href="/"
-                  >
-                    Easy Money
-                  </Link>
+                  <BrandLogo />
                 </div>
                 <div className="w-6/12 flex justify-end">
                   <button
@@ -117,6 +108,27 @@ export default function Sidebar() {
                     className={
                       "fas fa-table mr-2 text-sm " +
                       (isRouteActive("/") ? "opacity-75" : "text-blueGray-300")
+                    }
+                  ></i>
+                  Home
+                </Link>
+              </li>
+              <li className="items-center">
+                <Link
+                  className={
+                    "text-xs uppercase py-3 font-bold block " +
+                    (isRouteActive("/disbursement")
+                      ? "text-lightBlue-500 hover:text-lightBlue-600"
+                      : "text-blueGray-700 hover:text-blueGray-500")
+                  }
+                  href="/disbursement"
+                >
+                  <i
+                    className={
+                      "fas fa-table mr-2 text-sm " +
+                      (isRouteActive("/disbursement")
+                        ? "opacity-75"
+                        : "text-blueGray-300")
                     }
                   ></i>
                   Disbursement

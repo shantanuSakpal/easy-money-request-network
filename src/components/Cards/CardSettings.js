@@ -262,14 +262,16 @@ export default function CardSettings({ recipientList, setRecipientList }) {
               </div>
             </div>
           </div>
+          <div className="flex justify-end px-5">
+            <button
+              className="bg-lightBlue-500 text-white active:bg-lightBlue-600 font-bold uppercase  px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none  ease-linear transition-all duration-150 "
+              type="button"
+              onClick={handleSubmit}
+            >
+              Add
+            </button>
+          </div>
         </form>
-        <button
-          className="bg-lightBlue-500 text-white active:bg-lightBlue-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-          type="button"
-          onClick={handleSubmit}
-        >
-          Add
-        </button>
       </div>
     </div>
   );
