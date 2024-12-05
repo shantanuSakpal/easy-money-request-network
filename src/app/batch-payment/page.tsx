@@ -3,7 +3,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import React, { useState, useEffect } from "react";
 import { useAccount, useWalletClient } from "wagmi";
 import Link from "next/link";
-import { Employee } from "@/types/employees";
+import { RecipientType } from "@/types/recipientList";
 import { handleCreateRequest } from "@/utils/handleCreateRequest";
 import { handleSinglePayment } from "@/utils/handleSinglePayment";
 import { processBatchPayments } from "@/utils/processBatchPayments";
@@ -26,17 +26,23 @@ export default function Page() {
 
   const employees = [
     {
-      name: "old account 2",
-      walletAddress: "0xCfb5065E1c275d57f32Bc23F676B043d7A470cC1",
-      email: "john@example.com",
-      amount: 0.001, //in eth
-      department: "sales",
+      name: "Mohammed Mehdi",
+      email: "mohdmehdi2003@gmail.com",
+      walletAddress: "0x96F00170DA867d5aD7879bc3f4cEdf8f4CDf6926",
+      teamName: "Random_state_42",
+      amount: 7500,
+      address: "Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09",
+      city: "New York",
+      country: "United States",
+      postalCode: 400059,
+      notes: "Thank you for taking part in this event",
+      status: "pending",
     },
   ];
 
   const USDC_ADDRESS = "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238"; // Sepolia USDC address
 
-  const createAllRequestIds = async (employees: Array<Employee>) => {
+  const createAllRequestIds = async (employees: Array<RecipientType>) => {
     const allRequestIds: string[] = [];
 
     try {
@@ -64,7 +70,7 @@ export default function Page() {
     }
   };
 
-  const handleBatchPayment = async (employees: Array<Employee>) => {
+  const handleBatchPayment = async (employees: Array<RecipientType>) => {
     if (!isConnected) return;
     setLoading(true);
 
@@ -87,7 +93,7 @@ export default function Page() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Batch Employee Payment</h1>
+      <h1 className="text-2xl font-bold mb-4">Batch RecipientType Payment</h1>
 
       <ConnectButton />
 
@@ -97,7 +103,6 @@ export default function Page() {
             <p className="font-bold">{employee.name}</p>
             <p>Wallet Address: {employee.walletAddress}</p>
             <p>Email: {employee.email}</p>
-            <p>Department: {employee.department}</p>
             <p>Amount: {employee.amount} ETH</p>
             {/* <button
               onClick={async () => {

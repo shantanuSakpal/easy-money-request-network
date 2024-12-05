@@ -4,22 +4,22 @@ import {
   Utils,
 } from "@requestnetwork/request-client.js";
 import { parseEther } from "ethers/lib/utils";
-import { Employee } from "@/types/employees";
+import { RecipientType } from "@/types/recipientList";
 import { requestClient } from "./requestClient";
 import { Wallet } from "ethers";
 
 export const handleCreateRequest = async ({
-  employee,
+  recipient,
   payerWalletAddress,
 }: {
-  employee: Employee;
+  recipient: RecipientType;
   payerWalletAddress: `0x${string}`;
 }) => {
   const payeeIdentity = new Wallet(process.env.NEXT_PUBLIC_PAYEE_PRIVATE_KEY!)
     .address; //payee is the one creating the request, so he need to sign it
 
   const payerIdentity = payerWalletAddress; //payer pays the money, we can get data from reqeust scan using this address.
-  const paymentRecipient = employee.walletAddress; //which address recieve the payment, we can get data from reqeust scan using this address.
+  const paymentRecipient = recipient.walletAddress; //which address recieve the payment, we can get data from reqeust scan using this address.
   const feeRecipient = "0x0000000000000000000000000000000000000000";
 
   console.log("payee ident", payeeIdentity);
@@ -36,7 +36,7 @@ export const handleCreateRequest = async ({
 
       // The expected amount as a string, in parsed units, respecting `decimals`
       // Consider using `parseUnits()` from ethers or viem
-      expectedAmount: parseEther(employee.amount.toString()).toString(),
+      expectedAmount: parseEther(recipient.amount.toString()).toString(),
 
       // The payee identity. Not necessarily the same as the payment recipient.
       payee: {
@@ -84,7 +84,7 @@ export const handleCreateRequest = async ({
   // setRequestId(confirmedRequestData.requestId);
   console.log(
     "request id of request -  ----------------",
-    employee.email,
+    recipient.email,
     " is ",
     confirmedRequestData.requestId
   );

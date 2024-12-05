@@ -8,6 +8,7 @@ import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
 import { app } from "@/config/firebase";
 import { useAuthStore } from "@/store/auth";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function Sidebar() {
   const auth = getAuth(app);
@@ -175,6 +176,7 @@ export default function Sidebar() {
                 </li>
               </ul>
             )}
+            <ConnectButton />
           </div>
         </div>
       </nav>
