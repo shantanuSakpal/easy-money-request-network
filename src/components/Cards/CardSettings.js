@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import Papa from "papaparse";
 // components
@@ -7,38 +7,38 @@ export default function CardSettings({ recipientList, setRecipientList }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    wallet_addr: "",
-    team_name: "",
-    ammount: 0,
+    walletAddress: "",
+    teamName: "",
+    amount: 0,
     address: "",
     city: "",
     country: "",
-    postal_code: "",
+    postalCode: "",
     notes: "",
-    status: "pending"
+    status: "pending",
   });
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = () => {
-    setRecipientList(prev => [...prev, formData]);
+    setRecipientList((prev) => [...prev, formData]);
     setFormData({
       name: "",
       email: "",
-      wallet_addr: "",
-      team_name: "",
-      ammount: 0,
+      walletAddress: "",
+      teamName: "",
+      amount: 0,
       address: "",
       city: "",
       country: "",
-      postal_code: "",
+      postalCode: "",
       notes: "",
-      status: "pending"
+      status: "pending",
     });
   };
 
@@ -62,13 +62,13 @@ export default function CardSettings({ recipientList, setRecipientList }) {
         const parsedRecipients = results.data.map((row) => ({
           name: row["Name"] || "",
           email: row["Email"] || "",
-          wallet_addr: row["WalletAddress"] || "",
-          team_name: row["TeamName"] || "",
-          ammount: parseFloat(row["Amount"]) || 0,
+          walletAddress: row["WalletAddress"] || "",
+          teamName: row["TeamName"] || "",
+          amount: parseFloat(row["Amount"]) || 0,
           address: row["Address"] || "",
           city: row["City"] || "",
           country: row["Country"] || "",
-          postal_code: row["PostalCode"] || "",
+          postalCode: row["PostalCode"] || "",
           notes: row["Notes"] || "",
           status: "pending",
         }));
@@ -81,7 +81,6 @@ export default function CardSettings({ recipientList, setRecipientList }) {
       },
     });
   };
-
 
   return (
     <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
@@ -102,13 +101,6 @@ export default function CardSettings({ recipientList, setRecipientList }) {
             >
               Upload CSV
             </label>
-            <button
-              className="bg-lightBlue-500 text-white active:bg-lightBlue-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-              type="button"
-              onClick={handleSubmit}
-            >
-              Add
-            </button>
           </div>
         </div>
       </div>
@@ -125,8 +117,8 @@ export default function CardSettings({ recipientList, setRecipientList }) {
                 </label>
                 <input
                   type="text"
-                  name="wallet_addr"
-                  value={formData.wallet_addr}
+                  name="walletAddress"
+                  value={formData.walletAddress}
                   onChange={handleInputChange}
                   className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                 />
@@ -167,8 +159,8 @@ export default function CardSettings({ recipientList, setRecipientList }) {
                 </label>
                 <input
                   type="text"
-                  name="team_name"
-                  value={formData.team_name}
+                  name="teamName"
+                  value={formData.teamName}
                   onChange={handleInputChange}
                   className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                 />
@@ -180,12 +172,12 @@ export default function CardSettings({ recipientList, setRecipientList }) {
             <div className="w-full lg:w-12/12 px-4">
               <div className="relative w-full mb-3">
                 <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
-                  Amount
+                  Amount &#40;in ETH&#41;
                 </label>
                 <input
                   type="number"
-                  name="ammount"
-                  value={formData.ammount}
+                  name="amount"
+                  value={formData.amount}
                   onChange={handleInputChange}
                   className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                 />
@@ -246,8 +238,8 @@ export default function CardSettings({ recipientList, setRecipientList }) {
                 </label>
                 <input
                   type="text"
-                  name="postal_code"
-                  value={formData.postal_code}
+                  name="postalCode"
+                  value={formData.postalCode}
                   onChange={handleInputChange}
                   className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                 />
@@ -271,6 +263,13 @@ export default function CardSettings({ recipientList, setRecipientList }) {
             </div>
           </div>
         </form>
+        <button
+          className="bg-lightBlue-500 text-white active:bg-lightBlue-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+          type="button"
+          onClick={handleSubmit}
+        >
+          Add
+        </button>
       </div>
     </div>
   );
