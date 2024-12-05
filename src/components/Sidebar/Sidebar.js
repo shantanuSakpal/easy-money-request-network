@@ -45,7 +45,8 @@ export default function Sidebar() {
             <i className="fas fa-bars"></i>
           </button>
           {/* Brand */}
-          <BrandLogo /> {/* User */}
+          <BrandLogo />
+          {/* User */}
           <ul className="md:hidden items-center flex flex-wrap list-none">
             <li className="inline-block relative">
               <NotificationDropdown />
@@ -107,6 +108,27 @@ export default function Sidebar() {
                     className={
                       "fas fa-table mr-2 text-sm " +
                       (isRouteActive("/") ? "opacity-75" : "text-blueGray-300")
+                    }
+                  ></i>
+                  Home
+                </Link>
+              </li>
+              <li className="items-center">
+                <Link
+                  className={
+                    "text-xs uppercase py-3 font-bold block " +
+                    (isRouteActive("/disbursement")
+                      ? "text-lightBlue-500 hover:text-lightBlue-600"
+                      : "text-blueGray-700 hover:text-blueGray-500")
+                  }
+                  href="/disbursement"
+                >
+                  <i
+                    className={
+                      "fas fa-table mr-2 text-sm " +
+                      (isRouteActive("/disbursement")
+                        ? "opacity-75"
+                        : "text-blueGray-300")
                     }
                   ></i>
                   Disbursement
