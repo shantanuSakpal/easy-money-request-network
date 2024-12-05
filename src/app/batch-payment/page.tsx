@@ -24,13 +24,13 @@ export default function Page() {
     }
   }, [address]);
 
-  const employees = [
+  const recipientList = [
     {
       name: "Mohammed Mehdi",
       email: "mohdmehdi2003@gmail.com",
       walletAddress: "0x96F00170DA867d5aD7879bc3f4cEdf8f4CDf6926",
       teamName: "Random_state_42",
-      amount: 7500,
+      amount: 0.001,
       address: "Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09",
       city: "New York",
       country: "United States",
@@ -42,7 +42,7 @@ export default function Page() {
 
   const USDC_ADDRESS = "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238"; // Sepolia USDC address
 
-  const createAllRequestIds = async (employees: Array<RecipientType>) => {
+  const createAllRequestIds = async (recipientList: Array<RecipientType>) => {
     const allRequestIds: string[] = [];
 
     try {
@@ -50,11 +50,11 @@ export default function Page() {
         throw new Error("Wallet not connected");
       }
 
-      // Create an array of promises for all employee requests
-      const requestPromises = employees.map(async (employee) => {
+      // Create an array of promises for all recipient requests
+      const requestPromises = recipientList.map(async (recipient) => {
         //using private key to make requests
         const requestId = await handleCreateRequest({
-          employee,
+          recipient,
           payerWalletAddress: address!,
         });
         return requestId;
@@ -70,7 +70,7 @@ export default function Page() {
     }
   };
 
-  const handleBatchPayment = async (employees: Array<RecipientType>) => {
+  const handleBatchPayment = async (recipientList: Array<RecipientType>) => {
     if (!isConnected) return;
     setLoading(true);
 
@@ -78,7 +78,7 @@ export default function Page() {
       console.log("Creating requests in parallel...");
 
       //using private key to make requests
-      const requestIds = await createAllRequestIds(employees);
+      const requestIds = await createAllRequestIds(recipientList);
       console.log("All requests created:", requestIds);
 
       // Process batch payment, using connected wallet
@@ -98,17 +98,17 @@ export default function Page() {
       <ConnectButton />
 
       <div className="mt-6">
-        {employees.map((employee, index) => (
+        {recipientList.map((recipient, index) => (
           <div key={index} className="border p-4 mb-2 rounded ">
-            <p className="font-bold">{employee.name}</p>
-            <p>Wallet Address: {employee.walletAddress}</p>
-            <p>Email: {employee.email}</p>
-            <p>Amount: {employee.amount} ETH</p>
+            <p className="font-bold">{recipient.name}</p>
+            <p>Wallet Address: {recipient.walletAddress}</p>
+            <p>Email: {recipient.email}</p>
+            <p>Amount: {recipient.amount} ETH</p>
             {/* <button
               onClick={async () => {
                 if (!isConnected) return;
                 await handleCreateRequest({
-                  employee,
+                  recipient,
                 });
               }}
               disabled={!isConnected || loading}
@@ -157,7 +157,7 @@ export default function Page() {
 
       <button
         onClick={() => {
-          handleBatchPayment(employees);
+          handleBatchPayment(recipientList);
         }}
         disabled={!isConnected || loading}
         className="p-3 rounded bg-blue-600 font-bold text-white disabled:bg-gray-400"
@@ -171,7 +171,7 @@ export default function Page() {
           {status.results.map((result, index) => (
             <div key={index} className="mt-2">
               <p>
-                Paid {result.employee.name}: {result.status}
+                Paid {result.recipient.name}: {result.status}
               </p>
               <p className="text-sm">Request ID: {result.requestId}</p>
             </div>
