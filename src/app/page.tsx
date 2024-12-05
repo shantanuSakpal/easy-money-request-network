@@ -24,7 +24,9 @@ export default function Tables() {
   const [signer, setSigner] = useState<any>(null);
 
   useEffect(() => {
+    // @ts-ignore
     if (window.ethereum && address) {
+      // @ts-ignore
       const provider = new providers.Web3Provider(window.ethereum);
       setSigner(provider.getSigner(address));
     }
@@ -50,10 +52,10 @@ export default function Tables() {
     creationDate: "2018-01-01T18:25:43.511Z",
     // invoiceNumber: "",
     note: "this is a very simple example of invoice",
-    businessName: "",
-    businessAddress: "",
-    businessContact: "",
-    businessEmail: ""
+    businessName: "PayWithRIng",
+    businessAddress: " bkc, Mumbai - 400059",
+    businessContact: "123987122",
+    businessEmail: "ring@something.com"
   });
 
   // pageMode addingUser -> writingEmail -> invoiceDetails
@@ -152,6 +154,7 @@ export default function Tables() {
           <CardInvoice
             invoiceData={invoiceData}
             setInvoiceData={setInvoiceData}
+            recipient={recipientList[0]}
           />
         )}
 
