@@ -1,10 +1,13 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AdminNavbar from "@/components/Navbars/AdminNavbar";
 import HeaderStats from "@/components/Headers/HeaderStats";
+// components
+
 import CardTable from "@/components/Cards/CardTable.js";
 import CardSettings from "@/components/Cards/CardSettings";
 import EmailEditor from "@/components/Cards/EmailEditor";
+import CardInvoice from "@/components/Cards/CardInvoice";
 import { handleCreateRequest } from "@/utils/handleCreateRequest";
 import { handleSinglePayment } from "@/utils/handleSinglePayment";
 import { processBatchPayments } from "@/utils/processBatchPayments";
@@ -43,12 +46,25 @@ export default function Tables() {
     },
   ]);
 
-  // pageMode addingUser -> writingEmail
+  const [invoiceData, setInvoiceData] = useState({
+    creationDate: "2018-01-01T18:25:43.511Z",
+    // invoiceNumber: "",
+    note: "this is a very simple example of invoice",
+    businessName: "",
+    businessAddress: "",
+    businessContact: "",
+    businessEmail: ""
+  });
+
+  // pageMode addingUser -> writingEmail -> invoiceDetails
   const [pageMode, setPageMode] = useState("addingUser");
 
   const goPageForward = () => {
     if (pageMode === "addingUser") {
       setPageMode("writingEmail");
+    }
+    if (pageMode === "writingEmail") {
+      setPageMode("invoiceDetails");
     }
   };
 
@@ -56,6 +72,9 @@ export default function Tables() {
   const goPageBackward = () => {
     if (pageMode === "writingEmail") {
       setPageMode("addingUser");
+    }
+    if (pageMode === "invoiceDetails") {
+      setPageMode("writingEmail");
     }
   };
 
@@ -129,6 +148,12 @@ export default function Tables() {
         {pageMode == "writingEmail" && (
           <EmailEditor recipientList={recipientList} />
         )}
+        {pageMode == "invoiceDetails" && (
+          <CardInvoice
+            invoiceData={invoiceData}
+            setInvoiceData={setInvoiceData}
+          />
+        )}
 
         <div className="flex ">
           <button
@@ -146,13 +171,13 @@ export default function Tables() {
 
           <button
             className={`${
-              pageMode === "writingEmail"
+              pageMode === "invoiceDetails"
                 ? "opacity-25 bg-lightBlue-500 cursor-not-allowed"
                 : "bg-lightBlue-500 active:bg-lightBlue-600"
             } text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
             type="button"
             onClick={goPageForward}
-            disabled={pageMode === "writingEmail"}
+            disabled={pageMode === "invoiceDetails"}
           >
             Next Section
           </button>
