@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import "./globals.css";
+import dynamic from "next/dynamic";
+import "@rainbow-me/rainbowkit/styles.css";
+import Providers from "@/components/Providers";
+import FooterAdmin from "@/components/Footers/FooterAdmin";
+import Sidebar from "@/components/Sidebar/Sidebar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,7 +34,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <Providers>
+          {" "}
+          <Sidebar />
+          <div className="relative md:ml-64 bg-blueGray-100">
+            {/* Header */}
+            {/* <div className="px-4 md:px-10 mx-auto w-full -m-24"> */}
+            {children}
+            <FooterAdmin />
+            {/* </div> */}
+          </div>
+        </Providers>
       </body>
     </html>
   );

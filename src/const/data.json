@@ -1,0 +1,452 @@
+{
+  "events": [
+    {
+      "id": "tech-conf-2024",
+      "name": "Future of Tech Summit 2024",
+      "type": "Conference",
+      "featured": true,
+      "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87",
+      "headerImage": "https://images.unsplash.com/photo-1515187029135-18ee286d815b",
+      "dateTime": "2024-09-15T09:00:00",
+      "endDateTime": "2024-09-16T18:00:00",
+      "location": {
+        "venue": "Digital Innovation Center",
+        "address": "123 Tech Boulevard",
+        "city": "San Francisco",
+        "country": "USA",
+        "coordinates": {
+          "lat": 37.7749,
+          "lng": -122.4194
+        }
+      },
+      "startingPrice": 299,
+      "organizer": {
+        "name": "TechEvents Global",
+        "logo": "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9",
+        "description": "Leading technology conference organizer since 2010"
+      },
+      "ticketTiers": [
+        {
+          "id": "regular",
+          "name": "Regular Access",
+          "price": 299,
+          "description": "Full conference access, lunch included",
+          "available": 200
+        },
+        {
+          "id": "vip",
+          "name": "VIP Experience",
+          "price": 599,
+          "description": "Premium seating, exclusive networking event, speaker meet & greet",
+          "available": 50
+        },
+        {
+          "id": "student",
+          "name": "Student Pass",
+          "price": 149,
+          "description": "Valid student ID required, full conference access",
+          "available": 100
+        }
+      ]
+    },
+    {
+      "id": "rock-festival-2024",
+      "name": "Summer Rock Festival",
+      "type": "Concert",
+      "featured": true,
+      "image": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3",
+      "headerImage": "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec",
+      "dateTime": "2024-07-20T16:00:00",
+      "endDateTime": "2024-07-20T23:00:00",
+      "location": {
+        "venue": "Sunset Arena",
+        "address": "789 Beach Road",
+        "city": "Miami",
+        "country": "USA",
+        "coordinates": {
+          "lat": 25.7617,
+          "lng": -80.1918
+        }
+      },
+      "startingPrice": 79,
+      "organizer": {
+        "name": "Rock Nation Events",
+        "logo": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4",
+        "description": "Premier music festival organizer"
+      },
+      "ticketTiers": [
+        {
+          "id": "general",
+          "name": "General Admission",
+          "price": 79,
+          "description": "Standing area access",
+          "available": 1000
+        },
+        {
+          "id": "vip-concert",
+          "name": "VIP Zone",
+          "price": 199,
+          "description": "Premium viewing area, complimentary drinks",
+          "available": 200
+        },
+        {
+          "id": "backstage",
+          "name": "Backstage Experience",
+          "price": 499,
+          "description": "Meet the artists, exclusive merchandise",
+          "available": 50
+        }
+      ]
+    },
+    {
+      "id": "design-workshop",
+      "name": "UX Design Masterclass",
+      "type": "Workshop",
+      "featured": true,
+      "image": "https://images.unsplash.com/photo-1531403009284-440f080d1e12",
+      "headerImage": "https://images.unsplash.com/photo-1558403194-611308249627",
+      "dateTime": "2024-08-05T10:00:00",
+      "endDateTime": "2024-08-05T17:00:00",
+      "location": {
+        "venue": "Creative Hub",
+        "address": "456 Design Street",
+        "city": "London",
+        "country": "UK",
+        "coordinates": {
+          "lat": 51.5074,
+          "lng": -0.1278
+        }
+      },
+      "startingPrice": 199,
+      "organizer": {
+        "name": "Design Masters",
+        "logo": "https://images.unsplash.com/photo-1557821552-17105176677c",
+        "description": "Expert-led design workshops and courses"
+      },
+      "ticketTiers": [
+        {
+          "id": "workshop-basic",
+          "name": "Workshop Access",
+          "price": 199,
+          "description": "Full day workshop, materials included",
+          "available": 30
+        },
+        {
+          "id": "workshop-plus",
+          "name": "Workshop + Mentoring",
+          "price": 299,
+          "description": "Workshop access plus 1-hour personal mentoring session",
+          "available": 15
+        }
+      ]
+    },
+    {
+      "id": "startup-conference",
+      "name": "Startup Growth Summit",
+      "type": "Conference",
+      "featured": false,
+      "image": "https://images.unsplash.com/photo-1475721027785-f74eccf877e2",
+      "headerImage": "https://images.unsplash.com/photo-1559223607-a43c990c692c",
+      "dateTime": "2024-10-10T08:30:00",
+      "endDateTime": "2024-10-11T17:00:00",
+      "location": {
+        "venue": "Innovation Hub",
+        "address": "321 Startup Avenue",
+        "city": "Berlin",
+        "country": "Germany",
+        "coordinates": {
+          "lat": 52.5200,
+          "lng": 13.4050
+        }
+      },
+      "startingPrice": 249,
+      "organizer": {
+        "name": "Startup Network EU",
+        "logo": "https://images.unsplash.com/photo-1559223607-a43c990c692c",
+        "description": "Europe's leading startup community"
+      },
+      "ticketTiers": [
+        {
+          "id": "startup-regular",
+          "name": "Regular Access",
+          "price": 249,
+          "description": "Full conference access, networking lunch",
+          "available": 300
+        },
+        {
+          "id": "startup-premium",
+          "name": "Premium Access",
+          "price": 449,
+          "description": "VIP seating, investor meeting opportunities",
+          "available": 100
+        },
+        {
+          "id": "startup-founder",
+          "name": "Founder Package",
+          "price": 699,
+          "description": "Premium access, pitch session slot, mentor matching",
+          "available": 50
+        }
+      ]
+    },
+    {
+      "id": "jazz-night",
+      "name": "Evening of Jazz",
+      "type": "Concert",
+      "featured": false,
+      "image": "https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f",
+      "headerImage": "https://images.unsplash.com/photo-1511192336575-5a79af67a629",
+      "dateTime": "2024-06-30T19:00:00",
+      "endDateTime": "2024-06-30T23:00:00",
+      "location": {
+        "venue": "Blue Note Club",
+        "address": "567 Jazz Street",
+        "city": "New Orleans",
+        "country": "USA",
+        "coordinates": {
+          "lat": 29.9511,
+          "lng": -90.0715
+        }
+      },
+      "startingPrice": 59,
+      "organizer": {
+        "name": "Jazz & Soul Productions",
+        "logo": "https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f",
+        "description": "Authentic jazz experiences since 1990"
+      },
+      "ticketTiers": [
+        {
+          "id": "jazz-standard",
+          "name": "Standard Seating",
+          "price": 59,
+          "description": "General admission seating",
+          "available": 100
+        },
+        {
+          "id": "jazz-premium",
+          "name": "Premium Table",
+          "price": 129,
+          "description": "Front row table service, complimentary drink",
+          "available": 40
+        },
+        {
+          "id": "jazz-dinner",
+          "name": "Dinner Package",
+          "price": 189,
+          "description": "Premium seating with 3-course dinner",
+          "available": 30
+        }
+      ]
+    },
+    {
+      "id": "eth-global-2025",
+      "name": "ETHGlobal Summit",
+      "type": "Conference",
+      "featured": true,
+      "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0",
+      "headerImage": "https://images.unsplash.com/photo-1642006953663-06f0387f5652",
+      "dateTime": "2025-03-15T09:00:00",
+      "endDateTime": "2025-03-17T18:00:00",
+      "location": {
+        "venue": "Crypto Convention Center",
+        "address": "888 Blockchain Boulevard",
+        "city": "Singapore",
+        "country": "Singapore",
+        "coordinates": {
+          "lat": 1.3521,
+          "lng": 103.8198
+        }
+      },
+      "startingPrice": 399,
+      "organizer": {
+        "name": "ETHGlobal",
+        "logo": "https://images.unsplash.com/photo-1622630998477-20aa696ecb05",
+        "description": "Leading Ethereum ecosystem event organizer"
+      },
+      "ticketTiers": [
+        {
+          "id": "builder",
+          "name": "Builder Pass",
+          "price": 399,
+          "description": "Full conference access, hackathon participation, workshops",
+          "available": 1000
+        },
+        {
+          "id": "investor",
+          "name": "Investor Connect",
+          "price": 1499,
+          "description": "VIP access, private networking lounge, pitch sessions",
+          "available": 100
+        }
+      ]
+    },
+    {
+      "id": "nft-art-festival",
+      "name": "Digital Renaissance: NFT Art Festival",
+      "type": "Exhibition",
+      "featured": false,
+      "image": "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e",
+      "headerImage": "https://images.unsplash.com/photo-1638913662380-9799def8ffb1",
+      "dateTime": "2025-05-20T10:00:00",
+      "endDateTime": "2025-05-23T20:00:00",
+      "location": {
+        "venue": "Modern Art Gallery",
+        "address": "456 Digital Avenue",
+        "city": "Tokyo",
+        "country": "Japan",
+        "coordinates": {
+          "lat": 35.6762,
+          "lng": 139.6503
+        }
+      },
+      "startingPrice": 89,
+      "organizer": {
+        "name": "CryptoArt Collective",
+        "logo": "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e",
+        "description": "Bridging traditional and digital art"
+      },
+      "ticketTiers": [
+        {
+          "id": "gallery-pass",
+          "name": "Gallery Access",
+          "price": 89,
+          "description": "Exhibition access, digital catalog",
+          "available": 500
+        },
+        {
+          "id": "collector",
+          "name": "Collector's Pass",
+          "price": 299,
+          "description": "VIP preview, artist meetups, exclusive NFT drop",
+          "available": 100
+        }
+      ]
+    },
+    {
+      "id": "food-wine-fest",
+      "name": "Mediterranean Food & Wine Festival",
+      "type": "Festival",
+      "featured": false,
+      "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
+      "headerImage": "https://images.unsplash.com/photo-1507434965515-61832950c743",
+      "dateTime": "2025-06-10T12:00:00",
+      "endDateTime": "2025-06-12T22:00:00",
+      "location": {
+        "venue": "Coastal Gardens",
+        "address": "123 Seaside Promenade",
+        "city": "Barcelona",
+        "country": "Spain",
+        "coordinates": {
+          "lat": 41.3851,
+          "lng": 2.1734
+        }
+      },
+      "startingPrice": 129,
+      "organizer": {
+        "name": "Mediterranean Culinary Arts",
+        "logo": "https://images.unsplash.com/photo-1466637574441-749b8f19452f",
+        "description": "Celebrating Mediterranean cuisine and culture"
+      },
+      "ticketTiers": [
+        {
+          "id": "tasting-pass",
+          "name": "Tasting Pass",
+          "price": 129,
+          "description": "All tastings, standard wine pairings",
+          "available": 1000
+        },
+        {
+          "id": "chef-experience",
+          "name": "Chef's Table Experience",
+          "price": 399,
+          "description": "Premium tastings, cooking workshops, exclusive wine tastings",
+          "available": 150
+        }
+      ]
+    },
+    {
+      "id": "defi-summit-2025",
+      "name": "DeFi Innovation Summit",
+      "type": "Conference",
+      "featured": false,
+      "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0",
+      "headerImage": "https://images.unsplash.com/photo-1642006953663-06f0387f5652",
+      "dateTime": "2025-09-05T09:00:00",
+      "endDateTime": "2025-09-07T18:00:00",
+      "location": {
+        "venue": "Dubai Financial Center",
+        "address": "Sheikh Zayed Road",
+        "city": "Dubai",
+        "country": "UAE",
+        "coordinates": {
+          "lat": 25.2048,
+          "lng": 55.2708
+        }
+      },
+      "startingPrice": 599,
+      "organizer": {
+        "name": "DeFi Alliance",
+        "logo": "https://images.unsplash.com/photo-1622630998477-20aa696ecb05",
+        "description": "Advancing decentralized finance innovation"
+      },
+      "ticketTiers": [
+        {
+          "id": "defi-standard",
+          "name": "Standard Access",
+          "price": 599,
+          "description": "Full conference access, networking events",
+          "available": 500
+        },
+        {
+          "id": "defi-whale",
+          "name": "Whale Pass",
+          "price": 2499,
+          "description": "VIP access, private investment sessions, founder dinner",
+          "available": 50
+        }
+      ]
+    },
+    {
+      "id": "wayne-charity-gala",
+      "name": "Wayne Enterprises Annual Charity Gala",
+      "type": "Gala",
+      "featured": true,
+      "image": "https://images.unsplash.com/photo-1519167758481-83f550bb49b3",
+      "headerImage": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30",
+      "dateTime": "2025-10-31T19:00:00",
+      "endDateTime": "2025-11-01T02:00:00",
+      "location": {
+        "venue": "Wayne Manor",
+        "address": "1007 Mountain Drive",
+        "city": "Gotham",
+        "country": "USA",
+        "coordinates": {
+          "lat": 40.7128,
+          "lng": -74.0060
+        }
+      },
+      "startingPrice": 1000,
+      "organizer": {
+        "name": "Wayne Foundation",
+        "logo": "https://images.unsplash.com/photo-1481819613568-3701cbc70156",
+        "description": "Serving Gotham's community since 1939"
+      },
+      "ticketTiers": [
+        {
+          "id": "gala-standard",
+          "name": "Standard Admission",
+          "price": 1000,
+          "description": "Evening gala access, dinner included (mask required)",
+          "available": 300
+        },
+        {
+          "id": "gala-vip",
+          "name": "VIP Experience",
+          "price": 5000,
+          "description": "Private lounge access, butler service, potential Batman sighting not guaranteed",
+          "available": 50
+        }
+      ]
+    }
+  ]
+}
