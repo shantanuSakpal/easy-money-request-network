@@ -56,10 +56,7 @@ export default function Tables() {
           />
         )}
         {pageMode == "writingEmail" && (
-          <EmailEditor
-            recipientList={recipientList}
-            setRecipientList={setRecipientList}
-          />
+          <EmailEditor recipientList={recipientList} />
         )}
 
         <div className="flex ">
