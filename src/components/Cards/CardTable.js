@@ -92,7 +92,7 @@ export default function CardTable({
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  Ammount
+                  Amount
                 </th>
                 <th
                   className={

@@ -142,12 +142,12 @@ export default function Tables() {
       };
 
       //send invoice to user
-      console.log("sending emails with invoice");
-      const res = await sendInvoiceEmail(emailData);
-      console.log("res", res);
-      if (res.message != "success") {
-        throw new Error(res.message);
-      }
+      // console.log("sending emails with invoice");
+      // const res = await sendInvoiceEmail(emailData);
+      // console.log("res", res);
+      // if (res.message != "success") {
+      //   throw new Error(res.message);
+      // }
     } catch (error: any) {
       setError(error.message);
       console.error("Error in batch payment process:", error);
