@@ -13,11 +13,10 @@ import {
   TypesUtils,
 } from "@requestnetwork/types";
 
-import { getAnyErc20Balance } from "./erc20";
 import { RequestLogicTypes } from "@requestnetwork/types";
 import { WalletConnection } from "near-api-js";
+import { isSolvent } from "@requestnetwork/payment-processor";
 
-import { NearChains } from "@requestnetwork/currency";
 export const noConversionNetworks = [
   ExtensionTypes.PAYMENT_NETWORK_ID.ERC777_STREAM,
   ExtensionTypes.PAYMENT_NETWORK_ID.ERC20_PROXY_CONTRACT,
@@ -65,7 +64,7 @@ export class UnsupportedPaymentChain extends Error {
 }
 
 /**
- * Verifies the address has enough funds to pay the request in its currency.
+ * Verifies the address has enough funds to pay all the  requests in batch in its currency.
  * Only supports networks with no (on-chain) conversion.
  *
  * @throws UnsupportedNetworkError if network isn't supported
@@ -94,9 +93,9 @@ export async function hasSufficientFundsForBatchPayments({
     const request = requests[i];
     sum = sum + Number(request.expectedAmount);
   }
-  console.log("total request pending amount ---", sum);
-  //modify below code to determine if user wallet has sufficient funds for all requests
 
+  //to-do: need to check if all requests have same payment network
+  //to-do : need to add support for NEAR
   const paymentNetwork = getPaymentNetwork(requests[0]);
   if (!paymentNetwork || !noConversionNetworks.includes(paymentNetwork)) {
     throw new UnsupportedNetworkError(paymentNetwork);
@@ -108,14 +107,16 @@ export async function hasSufficientFundsForBatchPayments({
       ExtensionTypes.PAYMENT_NETWORK_ID.ERC20_FEE_PROXY_CONTRACT ||
     paymentNetwork === ExtensionTypes.PAYMENT_NETWORK_ID.ETH_FEE_PROXY_CONTRACT
   ) {
+    //calculate the total fee required for all requests
     for (let i = 0; i < requests.length; i++) {
       const request = requests[i];
       let feeAmountForThisRequest =
         request.extensions[paymentNetwork].values.feeAmount || 0;
       totalFeeAmount = totalFeeAmount + Number(feeAmountForThisRequest);
     }
-    console.log("total fee amount", totalFeeAmount);
   }
+
+  //need to check if all requests have same currenryInfo
   return isSolvent({
     fromAddress: address,
     currency: requests[0].currencyInfo,
@@ -123,71 +124,4 @@ export async function hasSufficientFundsForBatchPayments({
     providerOptions,
     needsGas,
   });
-}
-
-/**
- * Verifies the address has enough funds to pay an amount in a given currency.
- * Supported chains: EVMs and Near.
- *
- * @param fromAddress the address willing to pay
- * @param providerOptions.provider the Web3 provider. Defaults to getDefaultProvider.
- * @param providerOptions.nearWalletConnection the Near WalletConnection
- * @throws UnsupportedNetworkError if network isn't supported
- */
-export async function isSolvent({
-  fromAddress,
-  currency,
-  amount,
-  providerOptions,
-  needsGas = true,
-}: {
-  fromAddress: string;
-  currency: RequestLogicTypes.ICurrency;
-  amount: BigNumberish;
-  providerOptions?: {
-    provider?: providers.Provider;
-    nearWalletConnection?: WalletConnection;
-  };
-  needsGas?: boolean;
-}): Promise<boolean> {
-  // Main case (EVM)
-  if (!providerOptions?.provider) {
-    throw new Error("provider missing");
-  }
-  const provider = providerOptions.provider;
-  const ethBalance = await provider.getBalance(fromAddress);
-
-  if (currency.type === "ETH") {
-    return ethBalance.gt(amount);
-  } else {
-    const balance = await getCurrencyBalance(fromAddress, currency, provider);
-    return (
-      (ethBalance.gt(0) || !needsGas) && BigNumber.from(balance).gte(amount)
-    );
-  }
-}
-
-/**
- * Returns the balance of a given address in a given currency.
- * @param address the address holding the funds
- * @param paymentCurrency if different from the requested currency
- * @param provider the Web3 provider. Defaults to Etherscan.
- * @throws UnsupportedNetworkError if the currency is not implemented.
- */
-async function getCurrencyBalance(
-  address: string,
-  paymentCurrency: RequestLogicTypes.ICurrency,
-  provider: providers.Provider
-): Promise<BigNumberish> {
-  switch (paymentCurrency.type) {
-    case "ETH": {
-      return provider.getBalance(address);
-    }
-    case "ERC777":
-    case "ERC20": {
-      return getAnyErc20Balance(paymentCurrency.value, address, provider);
-    }
-    default:
-      throw new UnsupportedNetworkError(paymentCurrency.network);
-  }
 }

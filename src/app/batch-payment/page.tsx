@@ -89,21 +89,16 @@ export default function Page() {
     setLoading(true);
 
     try {
-      // console.log("Creating requests in parallel...");
-      //using private key to make requests
-      // const requestIds = await createAllRequestIds(recipientList);
-      // console.log("All requests created:", requestIds);
+      console.log("Creating requests in parallel...");
+      // using private key to make requests
+      const requestIds = await createAllRequestIds(recipientList);
+      console.log("All requests created:", requestIds);
 
       // Process batch payment, using connected wallet
-      await processBatchPayments(
-        [
-          "016c3c2d7126fcd09cf6392cdf26a68715825e466d8319a267d4ce2a7836cf7b71",
-          "0121e41744b84ce145bf90d116862e5ecd77514171e293eb1beed7351cfca7e830",
-        ],
-        provider,
-        signer,
-        address
-      );
+      if (!address) {
+        throw new Error("Wallet not connected");
+      }
+      await processBatchPayments(requestIds, provider, signer, address);
     } catch (error) {
       console.error("Error in batch payment process:", error);
       throw error; // Re-throw to be handled by the component
