@@ -183,7 +183,7 @@ export default function CardTable({
                     {each.walletAddress}
                   </td>
                   <td className="font-bold border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    $ {each.amount}
+                    {each.amount} ETH
                   </td>
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                     {each.teamName}

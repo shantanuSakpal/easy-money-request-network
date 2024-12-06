@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Papa from "papaparse";
 // components
 
@@ -40,6 +40,8 @@ export default function CardSettings({ recipientList, setRecipientList }) {
       alert("Please enter a valid amount");
       return;
     }
+
+    console.log(formData);
 
     setRecipientList((prev) => [...prev, formData]);
     setFormData({
@@ -99,6 +101,24 @@ export default function CardSettings({ recipientList, setRecipientList }) {
       },
     });
   };
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+
+      name: "mohammed",
+      email: "shantanuesakpal1420@gmail.com",
+      walletAddress: "0x96F00170DA867d5aD7879bc3f4cEdf8f4CDf6926",
+      teamName: "BROgrammers",
+      amount: "0.001",
+      address: "",
+      city: "",
+      country: "",
+      postalCode: "",
+      notes: "",
+      status: "pending",
+    }));
+  }, []);
 
   return (
     <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">

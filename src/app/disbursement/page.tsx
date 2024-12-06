@@ -30,21 +30,25 @@ export default function Tables() {
   }, [address]);
   // status : pending , completed , delayed
   const [recipientList, setRecipientList] = useState([]);
-
+  const todayDate = new Date().toISOString().split("T")[0];
   const [invoiceData, setInvoiceData] = useState({
-    creationDate: "2018-01-01T18:25:43.511Z",
+    creationDate: todayDate,
     // invoiceNumber: "",
-    note: "this is a very simple example of invoice",
-    businessName: "",
-    businessAddress: "",
-    businessContact: "",
-    businessEmail: "",
+    note: "You can see the transaction on the provider link on Request Scan !",
+    payerName: "",
+    payerAddress: "",
+    payerContact: "",
+    payerEmail: "",
   });
 
   // pageMode addingUser -> writingEmail -> invoiceDetails
   const [pageMode, setPageMode] = useState("addingUser");
 
   const goPageForward = () => {
+    if (recipientList.length <= 0) {
+      alert("please add recipient first");
+      return;
+    }
     if (pageMode === "addingUser") {
       setPageMode("writingEmail");
     }
