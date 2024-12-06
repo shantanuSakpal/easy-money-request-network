@@ -88,5 +88,6 @@ export const handleCreateRequest = async ({
     " is ",
     confirmedRequestData.requestId
   );
+
   return confirmedRequestData.requestId;
 };

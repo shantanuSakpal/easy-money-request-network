@@ -4,6 +4,7 @@ import InvoiceTemplate from "@/components/Cards/InvoiceTemplate";
 import { useAccount } from "wagmi";
 
 export default function InvoiceForm({
+  requestIds,
   invoiceData,
   setInvoiceData,
   recipient,
@@ -172,6 +173,7 @@ export default function InvoiceForm({
 
         <div className="flex flex-col mt-5 w-11/12 bg-white mx-auto">
           <InvoiceTemplate
+            requestIds={requestIds}
             payerName={invoiceData.payerName}
             payerAddress={invoiceData.payerAddress}
             payerContact={invoiceData.payerContact}

@@ -1,9 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import AdminNavbar from "@/components/Navbars/AdminNavbar";
-import HeaderStats from "@/components/Headers/HeaderStats";
-// components
-
 import CardTable from "@/components/Cards/CardTable.js";
 import CardSettings from "@/components/Cards/CardSettings";
 import EmailEditor from "@/components/Cards/EmailEditor";
@@ -13,15 +9,18 @@ import { processBatchPayments } from "@/utils/processBatchPayments";
 import { providers } from "ethers";
 import { useAccount, useWalletClient } from "wagmi";
 import { RecipientType } from "@/types/recipientList";
+import PaymentProgress from "@/components/PaymentProgressIndicator";
 
 export default function Tables() {
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
-  const [requestId, setRequestId] = useState("");
+  const [requestIds, setRequestIds] = useState<Array<string>>([]);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [signer, setSigner] = useState<any>(null);
-
+  const [stage, setStage] = useState("creating");
+  const [error, setError] = useState(null);
+  const [emailIdMap, setEmailIdMap] = useState({});
   useEffect(() => {
     if (window.ethereum && address) {
       const provider = new providers.Web3Provider(window.ethereum);
@@ -40,7 +39,8 @@ export default function Tables() {
     payerContact: "",
     payerEmail: "",
   });
-
+  const [processingPayment, setProcessingPayment] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
   // pageMode addingUser -> writingEmail -> invoiceDetails
   const [pageMode, setPageMode] = useState("addingUser");
 
@@ -84,8 +84,10 @@ export default function Tables() {
         });
         return requestId;
       });
+
       // Wait for all promises to resolve - if any fail, the whole Promise.all will fail
       const requestIds = await Promise.all(requestPromises);
+      setRequestIds(requestIds);
       // Add all request IDs to the array
       allRequestIds.push(...requestIds);
       return allRequestIds;
@@ -96,26 +98,30 @@ export default function Tables() {
   };
 
   const handleBatchPayment = async (recipientList: Array<RecipientType>) => {
+    setIsComplete(false); // Reset completion state
+
     if (!isConnected) {
-      alert("Please connect your wallet to proceed!.");
+      alert("Please connect your wallet to proceed!");
+      return;
     }
 
     setLoading(true);
-
+    setStage("creating");
+    setProcessingPayment(true);
     try {
-      console.log("Creating requests in parallel...");
-
-      //using private key to make requests
       const requestIds = await createAllRequestIds(recipientList);
-      console.log("All requests created:", requestIds);
+      setStage("confirm");
 
-      // Process batch payment, using connected wallet
       await processBatchPayments(requestIds, signer);
-      console.log("Batch payment processed successfully!");
-      alert("payment successfull !!");
-    } catch (error) {
+      setStage("processing");
+
+      // Wait for confirmation
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Replace with actual confirmation
+      setStage("complete");
+      setIsComplete(true);
+    } catch (error: any) {
+      setError(error.message);
       console.error("Error in batch payment process:", error);
-      throw error; // Re-throw to be handled by the component
     } finally {
       setLoading(false);
     }
@@ -139,6 +145,7 @@ export default function Tables() {
         )}
         {pageMode == "invoiceDetails" && (
           <CardInvoice
+            requestIds={requestIds}
             invoiceData={invoiceData}
             setInvoiceData={setInvoiceData}
             recipient={recipientList[0]}
@@ -189,6 +196,13 @@ export default function Tables() {
             </button>
           )}
         </div>
+        {processingPayment && (
+          <PaymentProgress
+            stage={stage}
+            error={error}
+            isComplete={isComplete}
+          />
+        )}
       </div>
     </>
   );

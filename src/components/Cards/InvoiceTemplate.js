@@ -1,4 +1,7 @@
+import Link from "next/link";
+
 const InvoiceTemplate = ({
+  requestIds,
   payerName,
   payerAddress,
   payerContact,
@@ -53,13 +56,16 @@ const InvoiceTemplate = ({
 
       <div className="mb-8 border-b pb-4 ">
         <p className="text-gray-600 mb-2">Note: {recipient.notes}</p>
-      </div>
-
-      <div className="mb-8 border-b pb-4 ">
-        <p className="mb-2">Transaction Hash: something something</p>
-        <a className=" text-blue-500" href="LINK">
-          Request Scan - LINK{" "}
-        </a>
+        {requestIds && requestIds.length > 0 && (
+          <div>
+            <Link
+              className="text-blue-500 underline mb-5"
+              href={`https://scan.request.network/request/${requestIds[0]}`}
+            >
+              View Transaction on Request scan
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Payment Details */}
