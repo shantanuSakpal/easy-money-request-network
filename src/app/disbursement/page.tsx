@@ -10,6 +10,7 @@ import { providers } from "ethers";
 import { useAccount, useWalletClient } from "wagmi";
 import { RecipientType } from "@/types/recipientList";
 import PaymentProgress from "@/components/PaymentProgressIndicator";
+import { sendInvoiceEmail } from "@/utils/sendInvoiceEmail";
 
 export default function Tables() {
   const { address, isConnected } = useAccount();
@@ -116,9 +117,37 @@ export default function Tables() {
       setStage("processing");
 
       // Wait for confirmation
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Replace with actual confirmation
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       setStage("complete");
       setIsComplete(true);
+
+      console.log("");
+
+      const emailData = {
+        recipient: {
+          name: "John Doe",
+          email: "shantanuesakpal1420@gmail.com",
+          teamName: "Engineering",
+          country: "United States",
+          postalCode: "94105",
+          walletAddress: "0x1234567890123456789012345678901234567890",
+          amount: 0.5,
+          notes: "Monthly payment for services",
+        },
+        payerName: "Acme Corporation",
+        payerAddress: "123 Tech Lane, Silicon Valley, CA",
+        payerContact: "+1-555-123-4567",
+        payerEmail: "bountystream01@gmail.com",
+        note: "Payment for Q3 2023 services",
+      };
+
+      //send invoice to user
+      console.log("sending emails with invoice");
+      const res = await sendInvoiceEmail(emailData);
+      console.log("res", res);
+      if (res.message != "success") {
+        throw new Error(res.message);
+      }
     } catch (error: any) {
       setError(error.message);
       console.error("Error in batch payment process:", error);
