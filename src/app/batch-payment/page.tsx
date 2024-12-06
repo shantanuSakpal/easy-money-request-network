@@ -16,11 +16,12 @@ export default function Page() {
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [signer, setSigner] = useState<any>(null);
-
+  const [provider, setProvider] = useState<any>(null);
   useEffect(() => {
     if (window.ethereum && address) {
       const provider = new providers.Web3Provider(window.ethereum);
       setSigner(provider.getSigner(address));
+      setProvider(provider);
     }
   }, [address]);
 
@@ -30,7 +31,20 @@ export default function Page() {
       email: "mohdmehdi2003@gmail.com",
       walletAddress: "0x96F00170DA867d5aD7879bc3f4cEdf8f4CDf6926",
       teamName: "Random_state_42",
-      amount: 0.001,
+      amount: 1,
+      address: "Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09",
+      city: "New York",
+      country: "United States",
+      postalCode: 400059,
+      notes: "Thank you for taking part in this event",
+      status: "pending",
+    },
+    {
+      name: "shantanu sakpal",
+      email: "mohdmehdi2003@gmail.com",
+      walletAddress: "0xCfb5065E1c275d57f32Bc23F676B043d7A470cC1",
+      teamName: "Random_state_42",
+      amount: 1,
       address: "Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09",
       city: "New York",
       country: "United States",
@@ -75,14 +89,21 @@ export default function Page() {
     setLoading(true);
 
     try {
-      console.log("Creating requests in parallel...");
-
+      // console.log("Creating requests in parallel...");
       //using private key to make requests
-      const requestIds = await createAllRequestIds(recipientList);
-      console.log("All requests created:", requestIds);
+      // const requestIds = await createAllRequestIds(recipientList);
+      // console.log("All requests created:", requestIds);
 
       // Process batch payment, using connected wallet
-      await processBatchPayments(requestIds, signer);
+      await processBatchPayments(
+        [
+          "016c3c2d7126fcd09cf6392cdf26a68715825e466d8319a267d4ce2a7836cf7b71",
+          "0121e41744b84ce145bf90d116862e5ecd77514171e293eb1beed7351cfca7e830",
+        ],
+        provider,
+        signer,
+        address
+      );
     } catch (error) {
       console.error("Error in batch payment process:", error);
       throw error; // Re-throw to be handled by the component
@@ -103,7 +124,7 @@ export default function Page() {
             <p className="font-bold">{recipient.name}</p>
             <p>Wallet Address: {recipient.walletAddress}</p>
             <p>Email: {recipient.email}</p>
-            <p>Amount: {recipient.amount} ETH</p>
+            <p>Amount: {recipient.amount} fUSDC</p>
             {/* <button
               onClick={async () => {
                 if (!isConnected) return;
