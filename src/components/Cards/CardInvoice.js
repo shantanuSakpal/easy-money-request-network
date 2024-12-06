@@ -1,9 +1,12 @@
 'use client'
 import React, { useState } from "react";
 import InvoiceTemplate from "@/components/Cards/InvoiceTemplate"
+import { useEmailContext } from "@/context/EmailContext";
 
 export default function InvoiceForm({ invoiceData, setInvoiceData, recipient }) {
+    const { emailData, setEmailData } = useEmailContext();
 
+    
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setInvoiceData(prev => ({

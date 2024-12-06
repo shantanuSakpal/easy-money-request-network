@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import AdminNavbar from "@/components/Navbars/AdminNavbar";
 import HeaderStats from "@/components/Headers/HeaderStats";
 // components
-
+import { useEmailContext } from "@/context/EmailContext";
 import CardTable from "@/components/Cards/CardTable.js";
 import CardSettings from "@/components/Cards/CardSettings";
 import EmailEditor from "@/components/Cards/EmailEditor";
@@ -13,9 +13,11 @@ import { processBatchPayments } from "@/utils/processBatchPayments";
 import { providers } from "ethers";
 import { useAccount, useWalletClient } from "wagmi";
 import { RecipientType } from "@/types/recipientList";
+import { sendInvoiceEmails } from "@/utils/sendInvoiceEmails";
 
 export default function Tables() {
   const { address, isConnected } = useAccount();
+  const { emailData, setEmailData } = useEmailContext();
   const { data: walletClient } = useWalletClient();
   const [requestId, setRequestId] = useState("");
   const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -102,12 +104,17 @@ export default function Tables() {
       console.log("Creating requests in parallel...");
 
       //using private key to make requests
-      const requestIds = await createAllRequestIds(recipientList);
-      console.log("All requests created:", requestIds);
+      // const requestIds = await createAllRequestIds(recipientList);
+      // console.log("All requests created:", requestIds);
 
-      // Process batch payment, using connected wallet
-      await processBatchPayments(requestIds, signer);
-      console.log("Batch payment processed successfully!");
+      // // Process batch payment, using connected wallet
+      // await processBatchPayments(requestIds, signer);
+      // console.log("Batch payment processed successfully!");
+      console.log(recipientList);
+      console.log(emailData);
+      // Send invoice emails to all recipients
+      await sendInvoiceEmails(recipientList, emailData);
+
       alert("payment successfull !!");
     } catch (error) {
       console.error("Error in batch payment process:", error);

@@ -2,13 +2,18 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
+import { useEmailContext } from "@/context/EmailContext";
+
 // DOnt use react-quill
 // it is incompatible with newer version fo recat
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 const EmailEditor = ({ recipientList }) => {
   const [content, setContent] = useState("Hey $name! You have been paid!");
+  const { emailData, setEmailData } = useEmailContext();
 
+
+  
   const variables = recipientList[0];
 
   const interpolateVariables = (text, variables) => {
