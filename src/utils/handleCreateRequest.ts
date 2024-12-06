@@ -3,7 +3,7 @@ import {
   Types,
   Utils,
 } from "@requestnetwork/request-client.js";
-import { parseEther, parseUnits } from "ethers/lib/utils";
+import { parseEther } from "ethers/lib/utils";
 import { RecipientType } from "@/types/recipientList";
 import { requestClient } from "./requestClient";
 import { Wallet } from "ethers";
@@ -30,14 +30,13 @@ export const handleCreateRequest = async ({
     requestInfo: {
       // The currency in which the request is denominated
       currency: {
-        type: Types.RequestLogic.CURRENCY.ERC20,
+        type: Types.RequestLogic.CURRENCY.ETH,
         network: "sepolia",
-        value: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238", //usdc on sepolia
       },
 
       // The expected amount as a string, in parsed units, respecting `decimals`
       // Consider using `parseUnits()` from ethers or viem
-      expectedAmount: parseUnits(recipient.amount.toString(), 6).toString(),
+      expectedAmount: parseEther(recipient.amount.toString()).toString(),
 
       // The payee identity. Not necessarily the same as the payment recipient.
       payee: {
@@ -57,7 +56,7 @@ export const handleCreateRequest = async ({
 
     // The paymentNetwork is the method of payment and related details.
     paymentNetwork: {
-      id: Types.Extension.PAYMENT_NETWORK_ID.ERC20_FEE_PROXY_CONTRACT,
+      id: Types.Extension.PAYMENT_NETWORK_ID.ETH_FEE_PROXY_CONTRACT,
       parameters: {
         paymentNetworkName: "sepolia",
         paymentAddress: paymentRecipient,
