@@ -19,12 +19,11 @@ const PaymentProgress = ({ stage, error, isComplete }) => {
       description:
         "Confirming payment on the blockchain, this may take a few seconds",
     },
-
     {
       id: "sending-emails",
       title: "Sending Invoice to email",
       description:
-        "This can take a few minutes (the current backend server is free tier, so please be patient) :)",
+        "This can take a minute (the current backend server is free tier, so please be patient) :)",
     },
     {
       id: "complete",
