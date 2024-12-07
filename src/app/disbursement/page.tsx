@@ -23,28 +23,7 @@ export default function Tables() {
   const [stage, setStage] = useState("creating");
   const [error, setError] = useState(null);
   const [emailBody, setEmailBody] = useState("");
-  const [recipientList, setRecipientList] = useState<Array<RecipientType>>([
-    {
-      id: "c9f5eec1-c634-4201-b2a0-8fbc610ebee3",
-      name: "Shantanu Sakpal",
-      businessName: "brogrammers",
-      firstName: "Shantanu",
-      lastName: "Sakpal",
-      email: "shantanuesakpal1420@gmail.com",
-      streetAddress: "",
-      city: "",
-      state: "",
-      postalCode: "",
-      country: "",
-      description: "",
-      amount: "0.001",
-      walletAddress: "0x96F00170DA867d5aD7879bc3f4cEdf8f4CDf6926",
-      phone: "",
-      taxRegistration: "",
-      deductions: "0",
-      invoiceNumber: "",
-    },
-  ]);
+  const [recipientList, setRecipientList] = useState<Array<RecipientType>>([]);
   const [payerDetails, setPayerDetails] = useState<PayerType>({});
   const todayDate = Date.now();
 
