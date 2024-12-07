@@ -8,7 +8,7 @@ export const sendInvoiceEmail = async (
   transactionLink: string
 ) => {
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-  console.log("sending emal");
+  console.log("sending email");
   const response = await fetch(`${BACKEND_URL}/api/send-email-invoice`, {
     method: "POST",
     headers: {
