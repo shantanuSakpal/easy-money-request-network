@@ -78,14 +78,6 @@ export async function processBatchPayments(
 
     if (!_hasErc20Approval) {
       //approve the erc20 for the batch payment
-      const approvalTx = await approveErc20ForBatchPayments(
-        requests,
-        provider,
-        {},
-        BigNumber.from(sum)
-      );
-      await approvalTx.wait(2);
-      console.log("approved erc20 for batch payment", approvalTx);
     }
     const _hasErc20ApprovalAfterApproval =
       await hasErc20ApprovalForBatchPayments(requests, payerAddress, provider);
@@ -95,6 +87,16 @@ export async function processBatchPayments(
     );
 
     if (!_hasErc20ApprovalAfterApproval) {
+      for (let i = 0; i < requests.length; i++) {
+        const approvalTx = await approveErc20ForBatchPayments(
+          requests[i],
+          provider,
+          {},
+          BigNumber.from(sum)
+        );
+        await approvalTx.wait(2);
+        console.log("approved erc20 for batch payment", approvalTx);
+      }
       alert("Failed to approve ERC20 for batch payment");
       throw new Error("couldnt approve ERC20 for batch payment");
     }

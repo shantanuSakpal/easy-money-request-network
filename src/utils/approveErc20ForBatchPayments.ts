@@ -18,13 +18,13 @@ import {
 import { ITransactionOverrides } from "@requestnetwork/payment-processor/dist/payment/transaction-overrides";
 
 export async function approveErc20ForBatchPayments(
-  requests: Array<ClientTypes.IRequestData>,
+  request: ClientTypes.IRequestData,
   signerOrProvider: providers.Provider | Signer = getProvider(),
   overrides?: ITransactionOverrides,
   amount: BigNumber = MAX_ALLOWANCE
 ): Promise<ContractTransaction> {
   const preparedTx = prepareApproveErc20(
-    requests[0],
+    request,
     signerOrProvider,
     overrides,
     amount
