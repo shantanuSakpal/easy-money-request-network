@@ -150,17 +150,19 @@ export default function Tables() {
         payerDetails
       );
 
+      setStage("processing");
+
+      // Wait for confirmation
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       setStage("confirm");
 
       const receipt = await processBatchPayments(
         Object.values(emailToRequestIdMap),
         signer
       );
-      setStage("processing");
 
-      // Wait for confirmation
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setStage("complete");
+      setStage("sending-emails");
 
       // Send invoices with transaction links
       await Promise.all(
@@ -183,6 +185,7 @@ export default function Tables() {
           }
         })
       );
+      setStage("complete");
 
       setIsComplete(true);
     } catch (error: any) {

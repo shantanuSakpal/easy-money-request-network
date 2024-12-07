@@ -9,19 +9,27 @@ const PaymentProgress = ({ stage, error, isComplete }) => {
       description: "Generating unique request IDs for each recipient",
     },
     {
-      id: "confirm",
-      title: "Awaiting Confirmation",
-      description: "Please confirm the transaction in your wallet",
-    },
-    {
       id: "processing",
       title: "Processing Payments",
       description: "Processing batch payments on the blockchain",
     },
     {
-      id: "complete",
+      id: "confirm",
+      title: "Awaiting Confirmation",
+      description:
+        "Confirming payment on the blockchain, this may take a few seconds",
+    },
+
+    {
+      id: "sending-emails",
       title: "Sending Invoice to email",
-      description: "All payments have been processed successfully",
+      description:
+        "This can take a few minutes (the current backend server is free tier, so please be patient) :)",
+    },
+    {
+      id: "complete",
+      title: "Payment complete",
+      description: "All payments have been processed successfully !",
     },
   ];
 
