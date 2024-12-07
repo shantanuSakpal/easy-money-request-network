@@ -30,7 +30,7 @@ export const handleCreateRequest = async ({
       version: "0.0.3",
     },
     creationDate: new Date().toISOString(),
-    invoiceNumber: payerDetails.invoiceNumber,
+    invoiceNumber: recipient.invoiceNumber,
     sellerInfo: {
       businessName: recipient?.businessName || recipient?.name,
       firstName: recipient?.firstName,

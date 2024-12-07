@@ -16,10 +16,10 @@ export interface RecipientType {
   phone: string;
   taxRegistration: string;
   deductions: string;
+  invoiceNumber: string;
 }
 
 export interface PayerType {
-  invoiceNumber: string;
   businessName: string;
   firstName: string;
   lastName: string;

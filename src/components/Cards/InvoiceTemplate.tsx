@@ -1,5 +1,6 @@
 import { PayerType, RecipientType } from "@/types/actors";
 import Link from "next/link";
+import { useAccount } from "wagmi";
 
 export default function InvoiceTemplate({
   requestIds,
@@ -12,6 +13,7 @@ export default function InvoiceTemplate({
   invoiceData: any;
   recipient: Partial<RecipientType>;
 }) {
+  const { address } = useAccount();
   const formattedAmount = recipient.deductions
     ? (Number(recipient.amount) - Number(recipient.deductions)).toFixed(4)
     : Number(recipient.amount).toFixed(4);
@@ -86,23 +88,17 @@ export default function InvoiceTemplate({
           </p>
         }
         {/* Request Links */}
-        {requestIds && requestIds.length > 0 && (
+        {
           <div className="mb-8">
             <h3 className="text-gray-700 font-semibold mb-4">Request Links</h3>
-            <ul>
-              {requestIds.map((id, index) => (
-                <li key={index} className="mb-2">
-                  <Link
-                    className="text-blue-500 underline"
-                    href={`https://scan.request.network/request/${id}`}
-                  >
-                    View Transaction on Request Scan
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <Link
+              className="text-blue-500 underline"
+              href={`https://scan.request.network/address/${address}`}
+            >
+              View Transaction on Request Scan
+            </Link>
           </div>
-        )}
+        }
       </div>
 
       {/* Payment Details */}

@@ -60,6 +60,7 @@ export default function CardSettings({
     const newRecipient = {
       ...formData,
       id: formData.id || crypto.randomUUID(),
+      invoiceNumber: `INV-${Date.now()}`,
       name: `${formData.firstName} ${formData.lastName}`, // Combine first and last name
     };
 
@@ -83,6 +84,8 @@ export default function CardSettings({
       walletAddress: "0x" as `0x${string}`,
       phone: "",
       taxRegistration: "",
+      deductions: "",
+      invoiceNumber: "",
     });
 
     window.scrollTo({ top: 0, behavior: "smooth" });

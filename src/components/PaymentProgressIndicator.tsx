@@ -20,7 +20,7 @@ const PaymentProgress = ({ stage, error, isComplete }) => {
     },
     {
       id: "complete",
-      title: "Payment Complete",
+      title: "Sending Invoice to email",
       description: "All payments have been processed successfully",
     },
   ];

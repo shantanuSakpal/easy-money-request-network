@@ -23,7 +23,6 @@ export default function Tables() {
   const [stage, setStage] = useState("creating");
   const [error, setError] = useState(null);
   const [emailBody, setEmailBody] = useState("");
-
   const [recipientList, setRecipientList] = useState<Array<RecipientType>>([
     {
       id: "c9f5eec1-c634-4201-b2a0-8fbc610ebee3",
@@ -43,15 +42,16 @@ export default function Tables() {
       phone: "",
       taxRegistration: "",
       deductions: "0",
+      invoiceNumber: "",
     },
   ]);
   const [payerDetails, setPayerDetails] = useState<PayerType>({});
-
   const todayDate = Date.now();
+
   const [invoiceData, setInvoiceData] = useState<any>({
     ...payerDetails,
     walletAddress: address,
-    invoiceNumber: `INV-${Date.now()}`, // Autofill payer address from connected account
+    // Autofill payer address from connected account
   });
   const [processingPayment, setProcessingPayment] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
@@ -104,7 +104,7 @@ export default function Tables() {
     recipientList: Array<RecipientType>,
     payerDetails: PayerType
   ) => {
-    const allRequestIds: string[] = [];
+    const emailToRequestIdMap: Record<string, string> = {};
 
     try {
       if (!walletClient) {
@@ -113,21 +113,20 @@ export default function Tables() {
 
       // Create an array of promises for all recipient requests
       const requestPromises = recipientList.map(async (recipient) => {
-        //using private key to make requests
         const requestId = await handleCreateRequest({
           recipient,
           payerDetails,
           payerWalletAddress: payerDetails.walletAddress,
         });
+        // Map email to the request ID
+        emailToRequestIdMap[recipient.email] = requestId;
         return requestId;
       });
 
-      // Wait for all promises to resolve - if any fail, the whole Promise.all will fail
       const requestIds = await Promise.all(requestPromises);
       setRequestIds(requestIds);
-      // Add all request IDs to the array
-      allRequestIds.push(...requestIds);
-      return allRequestIds;
+
+      return emailToRequestIdMap; // Return the map for later use
     } catch (error) {
       console.error("Failed to process requests:", error);
       throw error;
@@ -135,46 +134,55 @@ export default function Tables() {
   };
 
   const handleBatchPayment = async () => {
-    setIsComplete(false); // Reset completion state
+    setIsComplete(false);
     if (!isConnected) {
       alert("Please connect your wallet to proceed!");
       return;
     }
-    console.log("recipient List --------------- ", recipientList);
-    console.log("payer details =------------------", payerDetails);
-    console.log("invoice data---------", invoiceData);
-    console.log("email body -------------- ", emailBody);
+
     setLoading(true);
     setStage("creating");
     setProcessingPayment(true);
+
     try {
-      const requestIds = await createAllRequestIds(recipientList, payerDetails);
-      console.log("request ids --------------- ", requestIds);
+      const emailToRequestIdMap = await createAllRequestIds(
+        recipientList,
+        payerDetails
+      );
+
       setStage("confirm");
 
-      const receipt = await processBatchPayments(requestIds, signer);
-      console.log("receipt --------------- ", receipt);
+      const receipt = await processBatchPayments(
+        Object.values(emailToRequestIdMap),
+        signer
+      );
       setStage("processing");
 
       // Wait for confirmation
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setStage("complete");
-      // send invoice to users
-      console.log("sending emails with invoice");
-      const transactionLink = `https://scan.request.network/request/${requestIds[0]}`;
 
-      const note = "";
-      const res = await sendInvoiceEmail(
-        recipientList[0],
-        payerDetails,
-        emailBody,
-        note,
-        transactionLink
+      // Send invoices with transaction links
+      await Promise.all(
+        recipientList.map(async (recipient) => {
+          const transactionLink = `https://scan.request.network/request/${
+            emailToRequestIdMap[recipient.email]
+          }`;
+          const note = "";
+
+          const res = await sendInvoiceEmail(
+            recipient,
+            payerDetails,
+            emailBody,
+            note,
+            transactionLink
+          );
+
+          if (res.message !== "success") {
+            throw new Error(res.message);
+          }
+        })
       );
-      console.log("res", res);
-      if (res.message != "success") {
-        throw new Error(res.message);
-      }
 
       setIsComplete(true);
     } catch (error: any) {

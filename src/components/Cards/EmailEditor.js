@@ -4,8 +4,8 @@ import React, { useState, useEffect } from "react";
 const EmailEditor = ({ recipientList, emailBody, setEmailBody }) => {
   const [content, setContent] = useState(
     emailBody ||
-      `Hey $name! Congratulations on your win! 
-      Your bounty rewards have been sent to your wallet: $walletAddress`
+      `Hey $name! Congratulations on your win!\nYour bounty rewards have been sent to your wallet: $walletAddress
+      `
   );
 
   const variables = recipientList[0] || {};
