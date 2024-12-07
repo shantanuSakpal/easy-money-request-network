@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import CardTable from "@/components/Cards/CardTable.js";
+import CardTable from "@/components/Cards/CardTable";
 import CardSettings from "@/components/Cards/CardSettings";
 import EmailEditor from "@/components/Cards/EmailEditor";
 import CardInvoice from "@/components/Cards/CardInvoice";
@@ -8,9 +8,10 @@ import { handleCreateRequest } from "@/utils/handleCreateRequest";
 import { processBatchPayments } from "@/utils/processBatchPayments";
 import { providers } from "ethers";
 import { useAccount, useWalletClient } from "wagmi";
-import { RecipientType } from "@/types/recipientList";
 import PaymentProgress from "@/components/PaymentProgressIndicator";
 import { sendInvoiceEmail } from "@/utils/sendInvoiceEmail";
+import { PayerType, RecipientType } from "@/types/actors";
+import ConfirmAndPay from "@/components/Cards/ConfirmAndPay";
 
 export default function Tables() {
   const { address, isConnected } = useAccount();
@@ -21,40 +22,68 @@ export default function Tables() {
   const [signer, setSigner] = useState<any>(null);
   const [stage, setStage] = useState("creating");
   const [error, setError] = useState(null);
-  const [emailIdMap, setEmailIdMap] = useState({});
-  useEffect(() => {
-    if (window.ethereum && address) {
-      const provider = new providers.Web3Provider(window.ethereum);
-      setSigner(provider.getSigner(address));
-    }
-  }, [address]);
-  // status : pending , completed , delayed
-  const [recipientList, setRecipientList] = useState([]);
-  const todayDate = new Date().toISOString().split("T")[0];
-  const [invoiceData, setInvoiceData] = useState({
-    creationDate: todayDate,
-    // invoiceNumber: "",
-    note: "You can see the transaction on the provider link on Request Scan !",
-    payerName: "",
-    payerAddress: "",
-    payerContact: "",
-    payerEmail: "",
+  const [emailBody, setEmailBody] = useState("");
+
+  const [recipientList, setRecipientList] = useState<Array<RecipientType>>([
+    {
+      id: "c9f5eec1-c634-4201-b2a0-8fbc610ebee3",
+      name: "Shantanu Sakpal",
+      businessName: "brogrammers",
+      firstName: "Shantanu",
+      lastName: "Sakpal",
+      email: "shantanuesakpal1420@gmail.com",
+      streetAddress: "",
+      city: "",
+      state: "",
+      postalCode: "",
+      country: "",
+      description: "",
+      amount: "0.001",
+      walletAddress: "0x96F00170DA867d5aD7879bc3f4cEdf8f4CDf6926",
+      phone: "",
+      taxRegistration: "",
+      deductions: "0",
+    },
+  ]);
+  const [payerDetails, setPayerDetails] = useState<PayerType>({});
+
+  const todayDate = Date.now();
+  const [invoiceData, setInvoiceData] = useState<any>({
+    ...payerDetails,
+    walletAddress: address,
+    invoiceNumber: `INV-${Date.now()}`, // Autofill payer address from connected account
   });
   const [processingPayment, setProcessingPayment] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   // pageMode addingUser -> writingEmail -> invoiceDetails
   const [pageMode, setPageMode] = useState("addingUser");
 
+  useEffect(() => {
+    if (window.ethereum && address) {
+      const provider = new providers.Web3Provider(window.ethereum);
+      setSigner(provider.getSigner(address));
+    }
+  }, [address]);
+
   const goPageForward = () => {
     if (recipientList.length <= 0) {
       alert("please add recipient first");
       return;
     }
+
     if (pageMode === "addingUser") {
       setPageMode("writingEmail");
     }
     if (pageMode === "writingEmail") {
       setPageMode("invoiceDetails");
+    }
+    if (pageMode === "invoiceDetails") {
+      setPayerDetails(invoiceData);
+      setPayerDetails((prev) => ({
+        ...prev,
+        walletAddress: address!,
+      }));
+      setPageMode("confirmAndPay");
     }
   };
 
@@ -66,9 +95,15 @@ export default function Tables() {
     if (pageMode === "invoiceDetails") {
       setPageMode("writingEmail");
     }
+    if (pageMode === "confirmAndPay") {
+      setPageMode("invoiceDetails");
+    }
   };
 
-  const createAllRequestIds = async (recipientList: Array<RecipientType>) => {
+  const createAllRequestIds = async (
+    recipientList: Array<RecipientType>,
+    payerDetails: PayerType
+  ) => {
     const allRequestIds: string[] = [];
 
     try {
@@ -81,7 +116,8 @@ export default function Tables() {
         //using private key to make requests
         const requestId = await handleCreateRequest({
           recipient,
-          payerWalletAddress: address!,
+          payerDetails,
+          payerWalletAddress: payerDetails.walletAddress,
         });
         return requestId;
       });
@@ -98,56 +134,49 @@ export default function Tables() {
     }
   };
 
-  const handleBatchPayment = async (recipientList: Array<RecipientType>) => {
+  const handleBatchPayment = async () => {
     setIsComplete(false); // Reset completion state
-
     if (!isConnected) {
       alert("Please connect your wallet to proceed!");
       return;
     }
-
+    console.log("recipient List --------------- ", recipientList);
+    console.log("payer details =------------------", payerDetails);
+    console.log("invoice data---------", invoiceData);
+    console.log("email body -------------- ", emailBody);
     setLoading(true);
     setStage("creating");
     setProcessingPayment(true);
     try {
-      const requestIds = await createAllRequestIds(recipientList);
+      const requestIds = await createAllRequestIds(recipientList, payerDetails);
+      console.log("request ids --------------- ", requestIds);
       setStage("confirm");
 
-      await processBatchPayments(requestIds, signer);
+      const receipt = await processBatchPayments(requestIds, signer);
+      console.log("receipt --------------- ", receipt);
       setStage("processing");
 
       // Wait for confirmation
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setStage("complete");
+      // send invoice to users
+      console.log("sending emails with invoice");
+      const transactionLink = `https://scan.request.network/request/${requestIds[0]}`;
+
+      const note = "";
+      const res = await sendInvoiceEmail(
+        recipientList[0],
+        payerDetails,
+        emailBody,
+        note,
+        transactionLink
+      );
+      console.log("res", res);
+      if (res.message != "success") {
+        throw new Error(res.message);
+      }
+
       setIsComplete(true);
-
-      console.log("");
-
-      const emailData = {
-        recipient: {
-          name: "John Doe",
-          email: "shantanuesakpal1420@gmail.com",
-          teamName: "Engineering",
-          country: "United States",
-          postalCode: "94105",
-          walletAddress: "0x1234567890123456789012345678901234567890",
-          amount: 0.5,
-          notes: "Monthly payment for services",
-        },
-        payerName: "Acme Corporation",
-        payerAddress: "123 Tech Lane, Silicon Valley, CA",
-        payerContact: "+1-555-123-4567",
-        payerEmail: "bountystream01@gmail.com",
-        note: "Payment for Q3 2023 services",
-      };
-
-      //send invoice to user
-      // console.log("sending emails with invoice");
-      // const res = await sendInvoiceEmail(emailData);
-      // console.log("res", res);
-      // if (res.message != "success") {
-      //   throw new Error(res.message);
-      // }
     } catch (error: any) {
       setError(error.message);
       console.error("Error in batch payment process:", error);
@@ -170,13 +199,31 @@ export default function Tables() {
           />
         )}
         {pageMode == "writingEmail" && (
-          <EmailEditor recipientList={recipientList} />
+          <EmailEditor
+            recipientList={recipientList}
+            emailBody={emailBody}
+            setEmailBody={setEmailBody}
+          />
         )}
         {pageMode == "invoiceDetails" && (
           <CardInvoice
-            requestIds={requestIds}
             invoiceData={invoiceData}
             setInvoiceData={setInvoiceData}
+            emailBody={emailBody}
+            requestIds={requestIds}
+            payerDetails={payerDetails}
+            setPayerDetails={setPayerDetails}
+            recipient={recipientList[0]}
+          />
+        )}
+
+        {pageMode == "confirmAndPay" && (
+          <ConfirmAndPay
+            invoiceData={invoiceData}
+            emailBody={emailBody}
+            requestIds={requestIds}
+            payerDetails={payerDetails}
+            setPayerDetails={setPayerDetails}
             recipient={recipientList[0]}
           />
         )}
@@ -197,27 +244,27 @@ export default function Tables() {
 
           <button
             className={`${
-              pageMode === "invoiceDetails"
+              pageMode === "confirmAndPay"
                 ? "opacity-25 bg-lightBlue-500 cursor-not-allowed"
                 : "bg-lightBlue-500 active:bg-lightBlue-600"
             } text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
             type="button"
             onClick={goPageForward}
-            disabled={pageMode === "invoiceDetails"}
+            disabled={pageMode === "confirmAndPay"}
           >
             Next Section
           </button>
 
-          {pageMode === "invoiceDetails" && (
+          {pageMode === "confirmAndPay" && (
             <button
               className={`${
                 loading
-                  ? "opacity-25 bg-lightBlue-500 cursor-not-allowed"
-                  : "bg-lightBlue-500 active:bg-lightBlue-600"
+                  ? "opacity-25 bg-green-500 cursor-not-allowed"
+                  : "bg-green-500 active:bg-green-600"
               } text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
               type="button"
               onClick={() => {
-                handleBatchPayment(recipientList);
+                handleBatchPayment();
               }}
               disabled={loading}
             >

@@ -5,28 +5,21 @@ import PropTypes from "prop-types";
 // components
 
 import TableDropdown from "@/components/Dropdowns/TableDropdown.js";
+import { RecipientType } from "@/types/actors";
 
 export default function CardTable({
-  color = "light",
   recipientList,
   setRecipientList,
+}: {
+  recipientList: RecipientType[];
+  setRecipientList: (list: RecipientType[]) => void;
 }) {
-  const handleDelete = (index) => {
+  const color = "light";
+  const handleDelete = (index: number) => {
     const updatedList = recipientList.filter((_, i) => i !== index);
     setRecipientList(updatedList);
   };
 
-  const getStatusColor = (status) => {
-    // pending , completed , delayed
-    switch (status) {
-      case "pending":
-        return "text-orange-500";
-      case "completed":
-        return "text-emerald-500";
-      case "delayed":
-        return "text-red-500";
-    }
-  };
   return (
     <>
       <div
@@ -102,49 +95,9 @@ export default function CardTable({
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  Team Name
+                  Business Name
                 </th>
 
-                {/* <th
-                  className={
-                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
-                    (color === "light"
-                      ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
-                      : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
-                  }
-                >
-                  Country
-                </th> */}
-                {/* <th
-                  className={
-                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
-                    (color === "light"
-                      ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
-                      : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
-                  }
-                >
-                  City
-                </th> */}
-                {/* <th
-                  className={
-                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left" +
-                    (color === "light"
-                      ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
-                      : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
-                  }
-                >
-                  Progress
-                </th> */}
-                {/* <th
-                  className={
-                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
-                    (color === "light"
-                      ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
-                      : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
-                  }
-                >
-                  Status
-                </th> */}
                 <th
                   className={
                     "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
@@ -158,21 +111,6 @@ export default function CardTable({
             <tbody>
               {recipientList.map((each, index) => (
                 <tr key={`row-${index}`}>
-                  {/* <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
-                    <img
-                      src={require("assets/img2/user.png")}
-                      className="h-12 w-12 bg-white rounded-full border"
-                      alt="..."
-                    ></img>{" "}
-                    <span
-                      className={
-                        "ml-3 font-bold " +
-                        +(color === "light" ? "text-blueGray-600" : "text-white")
-                      }
-                    >
-                      {each.name}
-                    </span>
-                  </th> */}
                   <td className=" font-bold border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                     {each.name}
                   </td>
@@ -186,14 +124,9 @@ export default function CardTable({
                     {each.amount} ETH
                   </td>
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    {each.teamName}
+                    {each.businessName}
                   </td>
-                  {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    {each.country}
-                  </td>
-                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    {each.city}
-                  </td> */}
+
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
                     <div className="flex items-center gap-2">
                       <TableDropdown />
@@ -205,30 +138,6 @@ export default function CardTable({
                       </button>
                     </div>
                   </td>
-                  {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    <i
-                      className={`fas fa-circle mr-2 ${getStatusColor(
-                        each.status
-                      )}`}
-                    ></i>{" "}
-                    {each.status}
-                  </td> */}
-                  {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <div className="flex items-center">
-                    <span className="mr-2">73%</span>
-                    <div className="relative w-full">
-                      <div className="overflow-hidden h-2 text-xs flex rounded bg-red-200">
-                        <div
-                          style={{ width: "73%" }}
-                          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-500"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </td> */}
-                  {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
-                    <TableDropdown />
-                  </td> */}
                 </tr>
               ))}
             </tbody>

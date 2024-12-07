@@ -2,23 +2,37 @@
 import React from "react";
 import { sendInvoiceEmail } from "@/utils/sendInvoiceEmail";
 export default function () {
-  const data = {
-    recipient: {
-      name: "John Doe",
+  const recipientList = [
+    {
+      id: "c9f5eec1-c634-4201-b2a0-8fbc610ebee3",
+      name: "Shantanu Sakpal",
+      businessName: "brogrammers",
+      firstName: "Shantanu",
+      lastName: "Sakpal",
       email: "shantanuesakpal1420@gmail.com",
-      teamName: "Engineering",
-      country: "United States",
-      postalCode: "94105",
-      walletAddress: "0x1234567890123456789012345678901234567890",
-      amount: 0.5,
-      notes: "Monthly payment for services",
+      streetAddress: "",
+      city: "",
+      state: "",
+      postalCode: "",
+      country: "",
+      description: "",
+      amount: "0.001",
+      walletAddress: "0x96F00170DA867d5aD7879bc3f4cEdf8f4CDf6926",
+      phone: "",
+      taxRegistration: "",
+      deductions: "0",
     },
-    payerName: "Acme Corporation",
-    payerAddress: "123 Tech Lane, Silicon Valley, CA",
-    payerContact: "+1-555-123-4567",
-    payerEmail: "bountystream01@gmail.com",
-    note: "Payment for Q3 2023 services",
+  ];
+  const payerDetails = {
+    walletAddress: "0xFe53F81e87379e6730C0a2E0Afab0B7e011b1C55",
+    businessName: "DoraHacks",
+    email: "vineetchotaliya30@gmail.com",
+    phone: "9324406353",
+    taxRegistration: "12123123",
+    invoiceNumber: "INV-1733556610875",
   };
+  const emailBody = `  Hey $name! Congratulations on your win! 
+      Your bounty rewards have been sent to your wallet: $walletAddress`;
 
   return (
     <div className="pt-10 px-5">
@@ -26,8 +40,12 @@ export default function () {
       <button
         className="bg-blue-500 px-3 py-2 rounded-lg"
         onClick={async () => {
-          const res = await sendInvoiceEmail(data);
-          console.log("res", res);
+          const res = await sendInvoiceEmail(
+            recipientList[0],
+            payerDetails,
+            emailBody
+          );
+          // console.log("res", res);
         }}
       >
         Send email

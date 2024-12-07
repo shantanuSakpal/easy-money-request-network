@@ -17,7 +17,7 @@ export async function processBatchPayments(
       const request = await requestClient.fromRequestId(requestId);
       const requestData = await request.refresh();
 
-      console.log("request ----- ", index, "------", requestData.extensions);
+      // console.log("request ----- ", index, "------", requestData.extensions);
       return {
         request: requestData,
         paymentSettings: {
@@ -29,10 +29,10 @@ export async function processBatchPayments(
     })
   );
 
-  console.log(
-    "enrichedRequests",
-    enrichedRequests.map((enrichedRequest) => enrichedRequest.request)
-  );
+  // console.log(
+  //   "enrichedRequests",
+  //   enrichedRequests.map((enrichedRequest) => enrichedRequest.request)
+  // );
 
   // Process the batch payment
   try {
@@ -44,12 +44,13 @@ export async function processBatchPayments(
       version: "0.1.0", // Specify the contract version that is deployed on Sepolia
     });
 
-    console.log("Batch payment transaction hash:", tx.hash);
+    // console.log("Batch payment transaction hash:", tx.hash);
 
     // Wait for transaction confirmation
     const receipt = await tx.wait();
-    console.log("Batch payment confirmed in block:", receipt.blockNumber);
-    console.log("receipt", receipt);
+    // console.log("Batch payment confirmed in block:", receipt.blockNumber);
+    // console.log("receipt", receipt);
+    return receipt;
   } catch (error) {
     console.error("Error processing batch payment:", error);
     throw error;

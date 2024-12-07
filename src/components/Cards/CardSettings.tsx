@@ -1,69 +1,95 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { RecipientType } from "@/types/actors";
 import Papa from "papaparse";
 // components
 
-export default function CardSettings({ recipientList, setRecipientList }) {
-  const [formData, setFormData] = useState({
+export default function CardSettings({
+  recipientList,
+  setRecipientList,
+}: {
+  recipientList: RecipientType[];
+  setRecipientList: (list: RecipientType[]) => void;
+}) {
+  const [formData, setFormData] = useState<RecipientType>({
+    id: "",
     name: "",
+    businessName: "",
+    firstName: "",
+    lastName: "",
     email: "",
-    walletAddress: "",
-    teamName: "",
-    amount: 0,
-    address: "",
+    streetAddress: "",
     city: "",
-    country: "",
+    state: "",
     postalCode: "",
-    notes: "",
-    status: "pending",
+    country: "",
+    description: "",
+    amount: "0",
+    walletAddress: "0x" as `0x${string}`,
+    phone: "",
+    taxRegistration: "",
   });
-  const handleInputChange = (e) => {
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]:
+        name === "walletAddress" && !value.startsWith("0x")
+          ? `0x${value}`
+          : value,
     }));
   };
 
   const handleSubmit = () => {
-    //check if fields are null
+    // Basic validation
     if (
-      formData.name === "" ||
-      formData.email === "" ||
-      formData.walletAddress === ""
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.walletAddress ||
+      Number(formData.amount) <= 0
     ) {
-      alert("Please fill in all fields");
+      alert("Please fill in all required fields and enter a valid amount");
       return;
     }
 
-    if (formData.amount <= 0) {
-      alert("Please enter a valid amount");
-      return;
-    }
+    // Generate a unique ID if not present
+    const newRecipient = {
+      ...formData,
+      id: formData.id || crypto.randomUUID(),
+      name: `${formData.firstName} ${formData.lastName}`, // Combine first and last name
+    };
 
-    console.log(formData);
+    setRecipientList((prev) => [...prev, newRecipient]);
 
-    setRecipientList((prev) => [...prev, formData]);
+    // Reset form
     setFormData({
+      id: "",
       name: "",
+      businessName: "",
+      firstName: "",
+      lastName: "",
       email: "",
-      walletAddress: "",
-      teamName: "",
-      amount: 0,
-      address: "",
+      streetAddress: "",
       city: "",
-      country: "",
+      state: "",
       postalCode: "",
-      notes: "",
-      status: "pending",
+      country: "",
+      description: "",
+      amount: "0",
+      walletAddress: "0x" as `0x${string}`,
+      phone: "",
+      taxRegistration: "",
     });
 
-    //scrool up
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleCSVUpload = (e) => {
-    const file = e.target.files[0];
+  const handleCSVUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (!file) {
       alert("Please select a CSV file to upload.");
       return;
@@ -79,18 +105,25 @@ export default function CardSettings({ recipientList, setRecipientList }) {
           return;
         }
 
-        const parsedRecipients = results.data.map((row) => ({
-          name: row["Name"] || "",
+        const parsedRecipients = results.data.map((row: any) => ({
+          id: crypto.randomUUID(),
+          name: `${row["FirstName"] || ""} ${row["LastName"] || ""}`,
+          businessName: row["BusinessName"] || "",
+          firstName: row["FirstName"] || "",
+          lastName: row["LastName"] || "",
           email: row["Email"] || "",
-          walletAddress: row["WalletAddress"] || "",
-          teamName: row["TeamName"] || "",
-          amount: parseFloat(row["Amount"]) || 0,
-          address: row["Address"] || "",
+          streetAddress: row["StreetAddress"] || "",
           city: row["City"] || "",
-          country: row["Country"] || "",
+          state: row["State"] || "",
           postalCode: row["PostalCode"] || "",
-          notes: row["Notes"] || "",
-          status: "pending",
+          country: row["Country"] || "",
+          description: row["Description"] || "",
+          amount: row["Amount"] || "0",
+          walletAddress: (row["WalletAddress"]?.startsWith("0x")
+            ? row["WalletAddress"]
+            : `0x${row["WalletAddress"]}`) as `0x${string}`,
+          phone: row["Phone"] || "",
+          taxRegistration: row["TaxRegistration"] || "",
         }));
 
         setRecipientList((prev) => [...prev, ...parsedRecipients]);
@@ -101,24 +134,6 @@ export default function CardSettings({ recipientList, setRecipientList }) {
       },
     });
   };
-
-  useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-
-      name: "mohammed",
-      email: "shantanuesakpal1420@gmail.com",
-      walletAddress: "0x96F00170DA867d5aD7879bc3f4cEdf8f4CDf6926",
-      teamName: "BROgrammers",
-      amount: "0.001",
-      address: "",
-      city: "",
-      country: "",
-      postalCode: "",
-      notes: "",
-      status: "pending",
-    }));
-  }, []);
 
   return (
     <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
@@ -144,24 +159,78 @@ export default function CardSettings({ recipientList, setRecipientList }) {
       </div>
       <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
         <form>
+          {/*Basic Information */}
+
           <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
-            User Information
+            Basic Information
           </h6>
           <div className="flex flex-wrap">
             <div className="w-full lg:w-6/12 px-4">
               <div className="relative w-full mb-3">
                 <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
-                  Name <span className="text-lg text-red-500">*</span>
+                  First Name <span className="text-lg text-red-500">*</span>
                 </label>
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
+                  name="firstName"
+                  value={formData.firstName}
                   onChange={handleInputChange}
                   className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                 />
               </div>
             </div>
+            <div className="w-full lg:w-6/12 px-4">
+              <div className="relative w-full mb-3">
+                <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
+                  Last Name <span className="text-lg text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                  className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                />
+              </div>
+            </div>
+            <div className="w-full lg:w-6/12 px-4">
+              <div className="relative w-full mb-3">
+                <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
+                  Business Name
+                </label>
+                <input
+                  type="text"
+                  name="businessName"
+                  value={formData.businessName}
+                  onChange={handleInputChange}
+                  className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                />
+              </div>
+            </div>
+            <div className="w-full lg:w-6/12 px-4">
+              <div className="relative w-full mb-3">
+                <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
+                  Email <span className="text-lg text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                />
+              </div>
+            </div>
+          </div>
+
+          <hr className="mt-6 border-b-1 border-blueGray-300" />
+
+          {/*Payment Information */}
+          <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+            Payment Information
+          </h6>
+
+          <div className="flex flex-wrap">
             <div className="w-full lg:w-6/12 px-4">
               <div className="relative w-full mb-3">
                 <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
@@ -179,39 +248,7 @@ export default function CardSettings({ recipientList, setRecipientList }) {
             <div className="w-full lg:w-6/12 px-4">
               <div className="relative w-full mb-3">
                 <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
-                  Email address <span className="text-lg text-red-500">*</span>
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                />
-              </div>
-            </div>
-
-            <div className="w-full lg:w-6/12 px-4">
-              <div className="relative w-full mb-3">
-                <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
-                  Team Name
-                </label>
-                <input
-                  type="text"
-                  name="teamName"
-                  value={formData.teamName}
-                  onChange={handleInputChange}
-                  className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                />
-              </div>
-            </div>
-          </div>
-          <hr className="mt-6 mb-6 border-b-1 border-blueGray-300" />
-          <div className="flex flex-wrap">
-            <div className="w-full lg:w-12/12 px-4">
-              <div className="relative w-full mb-3">
-                <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
-                  Amount &#40;in ETH&#41;
+                  Amount (ETH) <span className="text-lg text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -223,83 +260,6 @@ export default function CardSettings({ recipientList, setRecipientList }) {
               </div>
             </div>
           </div>
-          {/* <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
-            Contact Information
-          </h6>
-          <div className="flex flex-wrap">
-            <div className="w-full lg:w-12/12 px-4">
-              <div className="relative w-full mb-3">
-                <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                />
-              </div>
-            </div>
-            <div className="w-full lg:w-4/12 px-4">
-              <div className="relative w-full mb-3">
-                <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
-                  City
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                />
-              </div>
-            </div>
-            <div className="w-full lg:w-4/12 px-4">
-              <div className="relative w-full mb-3">
-                <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
-                  Country
-                </label>
-                <input
-                  type="text"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleInputChange}
-                  className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                />
-              </div>
-            </div>
-            <div className="w-full lg:w-4/12 px-4">
-              <div className="relative w-full mb-3">
-                <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
-                  Postal Code
-                </label>
-                <input
-                  type="text"
-                  name="postalCode"
-                  value={formData.postalCode}
-                  onChange={handleInputChange}
-                  className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-wrap">
-            <div className="w-full lg:w-12/12 px-4">
-              <div className="relative w-full mb-3">
-                <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
-                  Notes
-                </label>
-                <textarea
-                  name="notes"
-                  value={formData.notes}
-                  onChange={handleInputChange}
-                  className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  rows="4"
-                ></textarea>
-              </div>
-            </div>
-          </div> */}
         </form>
         <div className="flex justify-end px-5 mt-5">
           <button

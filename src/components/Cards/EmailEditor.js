@@ -1,15 +1,14 @@
 "use client";
-import React, { useState } from "react";
-import dynamic from "next/dynamic";
-import "react-quill-new/dist/quill.snow.css";
-// DOnt use react-quill
-// it is incompatible with newer version fo recat
-const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+import React, { useState, useEffect } from "react";
 
-const EmailEditor = ({ recipientList }) => {
-  const [content, setContent] = useState("Hey $name! You have been paid!");
+const EmailEditor = ({ recipientList, emailBody, setEmailBody }) => {
+  const [content, setContent] = useState(
+    emailBody ||
+      `Hey $name! Congratulations on your win! 
+      Your bounty rewards have been sent to your wallet: $walletAddress`
+  );
 
-  const variables = recipientList[0];
+  const variables = recipientList[0] || {};
 
   const interpolateVariables = (text, variables) => {
     return text.replace(/\$(\w+)/g, (match, variable) => {
@@ -25,14 +24,18 @@ const EmailEditor = ({ recipientList }) => {
     return Object.keys(variables).map((key) => `$${key}`);
   };
 
-  const availableVars = getAvailableVariables(variables);
+  const availableVars = getAvailableVariables();
+
+  useEffect(() => {
+    setEmailBody(content); // Update the email body whenever content changes
+  }, [content, setEmailBody]);
 
   return (
     <div className="flex flex-col mb-5 p-5">
       <h3 className={"font-semibold text-lg text-blueGray-700 mb-5"}>
         Draft Confirmation Email
       </h3>
-      <div className="  mb-2">
+      <div className="mb-2">
         <span className="font-semibold text-blueGray-700">
           Available Variables:{" "}
         </span>
@@ -48,22 +51,21 @@ const EmailEditor = ({ recipientList }) => {
           </span>
         ))}
       </div>
-      <ReactQuill
-        theme="snow"
+      <textarea
         value={content}
-        onChange={setContent}
-        style={{
-          borderRadius: "0.25rem",
-        }}
-        className="bg-white"
+        onChange={(e) => setContent(e.target.value)} // Updates local state
+        rows="10"
+        className="mt-3 p-2 w-full border rounded bg-white"
+        style={{ fontFamily: "monospace" }}
       />
       <div className="mt-5">
-        <span className=" font-semibold text-blueGray-700">Email Preview:</span>
+        <span className="font-semibold text-blueGray-700">
+          Email body preview:
+        </span>
       </div>
-      <div
-        className="mt-1 p-5 rounded-lg bg-white"
-        dangerouslySetInnerHTML={{ __html: getProcessedContent() }}
-      />
+      <div className="mt-1 rounded-lg bg-white p-5">
+        <pre>{getProcessedContent()}</pre>
+      </div>
     </div>
   );
 };

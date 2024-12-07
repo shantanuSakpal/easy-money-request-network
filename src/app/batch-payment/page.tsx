@@ -12,7 +12,9 @@ import { providers } from "ethers";
 export default function Page() {
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
-  const [requestId, setRequestId] = useState("");
+  const [requestIds, setRequestIds] = useState<Array<string>>([
+    "0136f971f60c265e30639d125237a294f026616f90dad23a8eadfefa88b265b055",
+  ]);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [signer, setSigner] = useState<any>(null);
@@ -25,34 +27,43 @@ export default function Page() {
     }
   }, [address]);
 
-  const recipientList = [
-    {
-      name: "Mohammed Mehdi",
-      email: "mohdmehdi2003@gmail.com",
-      walletAddress: "0x96F00170DA867d5aD7879bc3f4cEdf8f4CDf6926",
-      teamName: "Random_state_42",
-      amount: 1,
-      address: "Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09",
-      city: "New York",
-      country: "United States",
-      postalCode: 400059,
-      notes: "Thank you for taking part in this event",
-      status: "pending",
-    },
-    {
-      name: "shantanu sakpal",
-      email: "mohdmehdi2003@gmail.com",
-      walletAddress: "0xCfb5065E1c275d57f32Bc23F676B043d7A470cC1",
-      teamName: "Random_state_42",
-      amount: 1,
-      address: "Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09",
-      city: "New York",
-      country: "United States",
-      postalCode: 400059,
-      notes: "Thank you for taking part in this event",
-      status: "pending",
-    },
-  ];
+  // Sample test data
+
+  const testRecipient1 = {
+    id: "rec_123",
+    name: "Tech Solutions Inc.",
+    businessName: "Tech Solutions Inc.",
+    firstName: "Jane",
+    lastName: "Doe",
+    email: "jane.doe@techsolutions.com",
+    streetAddress: "123 Innovation Drive",
+    city: "San Francisco",
+    state: "CA",
+    postalCode: "94105",
+    country: "United States",
+    description: "Software Development Services",
+    amount: "0.001", // 1.5 ETH
+    walletAddress:
+      "0x96F00170DA867d5aD7879bc3f4cEdf8f4CDf6926" as `0x${string}`,
+    phone: "+1 (555) 123-4567",
+    taxRegistration: "US123456789",
+  };
+
+  const recipientList = [testRecipient1];
+
+  const payer = {
+    businessName: "Global Enterprises LLC",
+    firstName: "John",
+    lastName: "Smith",
+    email: "john.smith@globalenterprises.com",
+    streetAddress: "456 Corporate Boulevard",
+    city: "New York",
+    state: "NY",
+    postalCode: "10001",
+    country: "United States",
+    phone: "+1 (555) 987-6543",
+    taxRegistration: "US987654321",
+  };
 
   const USDC_ADDRESS = "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238"; // Sepolia USDC address
 
@@ -69,6 +80,7 @@ export default function Page() {
         //using private key to make requests
         const requestId = await handleCreateRequest({
           recipient,
+          payer,
           payerWalletAddress: address!,
         });
         return requestId;
@@ -89,16 +101,17 @@ export default function Page() {
     setLoading(true);
 
     try {
-      console.log("Creating requests in parallel...");
+      // console.log("Creating requests in parallel...");/
       // using private key to make requests
       const requestIds = await createAllRequestIds(recipientList);
       console.log("All requests created:", requestIds);
+      setRequestIds(requestIds);
 
       // Process batch payment, using connected wallet
-      if (!address) {
-        throw new Error("Wallet not connected");
-      }
-      await processBatchPayments(requestIds, provider, signer, address);
+      // if (!address) {
+      //   throw new Error("Wallet not connected");
+      // }
+      // await processBatchPayments(requestIds, provider, signer, address);
     } catch (error) {
       console.error("Error in batch payment process:", error);
       throw error; // Re-throw to be handled by the component
@@ -119,7 +132,7 @@ export default function Page() {
             <p className="font-bold">{recipient.name}</p>
             <p>Wallet Address: {recipient.walletAddress}</p>
             <p>Email: {recipient.email}</p>
-            <p>Amount: {recipient.amount} fUSDC</p>
+            <p>Amount: {recipient.amount} eth</p>
             {/* <button
               onClick={async () => {
                 if (!isConnected) return;
@@ -132,35 +145,20 @@ export default function Page() {
             >
               {loading ? "Processing..." : "Create request"}
             </button> */}
-            {requestId && (
-              <div className="p-5">
-                <div className="">
-                  Request created successfully!
-                  <br />
-                  <Link
-                    target="_blank"
-                    href={`https://scan.request.network/request/${requestId}`}
-                    className="font-bold text-blue-500"
-                  >
-                    View Request on request scan
-                  </Link>
-                </div>
-                <button
-                  onClick={async () => {
-                    if (!isConnected) return;
-                    await handleSinglePayment({
-                      requestId,
-                      setLoading,
-                      setPaymentSuccess,
-                    });
-                  }}
-                  disabled={!isConnected || loading}
-                  className="p-3 rounded bg-blue-600 font-bold text-white disabled:bg-gray-400"
-                >
-                  {loading ? "Processing..." : "Make Payment"}
-                </button>
-              </div>
-            )}
+            {requestIds.length > 0 &&
+              requestIds.map((requestId, index) => {
+                return (
+                  <div>
+                    <Link
+                      className="text-blue-600 underline "
+                      target="_blank"
+                      href={`https://scan.request.network/request/${requestId}`}
+                    >
+                      view on request scan
+                    </Link>
+                  </div>
+                );
+              })}
 
             {paymentSuccess && (
               <div className="font-bold p-5 text-lg text-green-500">
