@@ -97,6 +97,9 @@ export default function CardSettings({
       alert("Please select a CSV file to upload.");
       return;
     }
+    function generateRandomNum() {
+      return Math.floor(Math.random() * 900000) + 100000;
+    }
 
     Papa.parse(file, {
       header: true,
@@ -127,6 +130,7 @@ export default function CardSettings({
             : `0x${row["WalletAddress"]}`) as `0x${string}`,
           phone: row["Phone"] || "",
           taxRegistration: row["TaxRegistration"] || "",
+          invoiceNumber: `INV-${generateRandomNum()}`,
         }));
 
         setRecipientList((prev) => [...prev, ...parsedRecipients]);
