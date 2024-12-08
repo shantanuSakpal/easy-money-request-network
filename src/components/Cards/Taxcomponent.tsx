@@ -59,7 +59,7 @@ function TaxComponent({ jsonData }) {
   return (
     <div className="grid grid-cols-4 gap-4 mb-8">
       {cardData.map((card, index) => (
-        <Card key={index} className="shadow-lg h-48">
+        <Card key={index} className="shadow-lg h-42">
           <CardBody className="flex flex-col justify-between p-6">
             <div className="flex justify-between items-center">
               <p className="text-lg font-medium text-gray-600">{card.title}</p>

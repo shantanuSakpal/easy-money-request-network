@@ -8,15 +8,17 @@ import { formatUnits } from "viem";
 import { useAccount } from "wagmi";
 import { Card, CardBody } from "@nextui-org/react";
 import TaxComponent from "@/components/Cards/Taxcomponent";
-import { FaCopy } from "react-icons/fa";
+import { FaCopy , FaPaperPlane} from "react-icons/fa";
 import { toast, Toaster } from 'react-hot-toast';
+import { Button } from "@nextui-org/react";
+
 
 export default function Home() {
   const { address } = useAccount();
   const userAddress: `0x${string}` = address!;
   const [loading, setLoading] = useState(false);
-  const [requests, setRequests] = 
-    useState<(Types.IRequestDataWithEvents | undefined)[]>(); 
+  const [requests, setRequests] =
+    useState<(Types.IRequestDataWithEvents | undefined)[]>();
 
   const fetchRequests = async () => {
     console.log("getting requests");
@@ -79,7 +81,16 @@ export default function Home() {
           </div>
         ) : (
           <div className="p-5 mx-24 h-screen">
-            <h1 className="text-3xl font-bold m-4 mb-8">Dashboard</h1>
+            <div className="flex justify-between items-center">
+              <h1 className="text-3xl font-bold m-4">Dashboard</h1>
+              <Button onClick={() => {}}>
+    <a href="/dashboard/tax-gpt">Try TaxGPT</a>
+    <FaPaperPlane />
+</Button>
+
+            </div>
+
+
             <div className="min-w-screen">
               <TaxComponent jsonData={requests} />
             </div>
@@ -89,8 +100,8 @@ export default function Home() {
                   <thead className="bg-gray-100">
                     <tr>
                       {["Request ID", "Payer", "Currency", "Amount", "Reason"].map((header, index) => (
-                        <th 
-                          key={index} 
+                        <th
+                          key={index}
                           className="px-6 py-3 text-left text-sm font-medium text-gray-600 uppercase tracking-wider"
                         >
                           {header}
@@ -139,13 +150,13 @@ export default function Home() {
                     <h2 className="text-xl font-semibold mb-4">Unique Payer Addresses</h2>
                     <div className="space-y-2 overflow-y-auto max-h-96">
                       {getUniquePayers().map((payer, index) => (
-                        <div 
-                          key={index} 
+                        <div
+                          key={index}
                           className="bg-gray-100 p-3 rounded-lg text-sm flex justify-between items-center"
                         >
                           <span>{payer?.slice(0, 6)}...{payer?.slice(-4)}</span>
-                          <FaCopy 
-                            className="text-gray-500 hover:text-gray-700 cursor-pointer" 
+                          <FaCopy
+                            className="text-gray-500 hover:text-gray-700 cursor-pointer"
                             onClick={() => copyToClipboard(payer!)}
                           />
                         </div>
