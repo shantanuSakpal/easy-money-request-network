@@ -56,9 +56,9 @@ const PaymentProgress = ({ stage, error, isComplete }) => {
     <div className="w-full max-w-3xl mx-auto space-y-8 p-6">
       {/* Progress Bar */}
       <div className="relative">
-        <div className="h-2 bg-gray-200 rounded-full">
+        <div className="h-2 bg-gray-200 rounded-full mb-4">
           <div
-            className="h-full bg-blue-500 rounded-full transition-all duration-500"
+            className="h-full bg-blue-500 rounded-full transition-all duration-500 "
             style={{
               width: isComplete
                 ? "100%"
