@@ -2,19 +2,22 @@ import { NextResponse } from "next/server";
 import { OpenAI } from "openai";
 
 const openai = new OpenAI({
-    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY!,
+  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY!,
 });
 
 export async function POST(req: Request) {
-    try {
-        const { jsonData } = await req.json();
+  try {
+    const { jsonData, message } = await req.json();
 
-        const completion = await openai.chat.completions.create({
-            model: "gpt-4",
-            messages: [
-                {
-                    role: "system",
-                    content: `
+    console.log("jsonData is ", jsonData);
+    console.log("message is ", message);
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        {
+          role: "system",
+          content: `
                         You are a financial and tax compliance assistant. 
                         Your job is to analyze the provided transaction data and return:
                         1. A JSON object summarizing key financial insights, structured as follows:
@@ -27,32 +30,35 @@ export async function POST(req: Request) {
                         
                         Ensure the JSON structure is well-formed and easy to parse.
                     `,
-                },
-                {
-                    role: "user",
-                    content: `Here is the JSON transaction data: ${JSON.stringify(jsonData)}`,
-                },
-            ],
-        });
+        },
+        {
+          role: "user",
+          content: `Here is the JSON transaction data: ${JSON.stringify(
+            jsonData
+          )}`,
+        },
+      ],
+    });
 
-        const responseContent = completion.choices[0]?.message?.content;
+    const responseContent = completion.choices[0]?.message?.content;
 
-        // Parse the response to check if it contains JSON.
-        const jsonStartIndex = responseContent?.indexOf("{");
-        const jsonEndIndex = responseContent?.lastIndexOf("}");
-        let jsonResponse: any;
-        if (jsonStartIndex !== -1 && jsonEndIndex !== -1) {
-            jsonResponse = JSON.parse(responseContent.slice(jsonStartIndex, jsonEndIndex + 1));
-        }
-
-        return NextResponse.json({
-            notes: responseContent,
-            extractedJson: jsonResponse || "No valid JSON found in the response.",
-        });
-    } catch (error: any) {
-        return NextResponse.json(
-            { error: error.message || "An error occurred while processing the request." },
-            { status: 500 }
-        );
-    }
+    // // Parse the response to check if it contains JSON.
+    // const jsonStartIndex = responseContent?.indexOf("{");
+    // const jsonEndIndex = responseContent?.lastIndexOf("}");
+    // let jsonResponse: any;
+    // if (jsonStartIndex !== -1 && jsonEndIndex !== -1) {
+    //     jsonResponse = JSON.parse(responseContent.slice(jsonStartIndex, jsonEndIndex + 1));
+    // }
+    return NextResponse.json({
+      message: responseContent,
+    });
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error:
+          error.message || "An error occurred while processing the request.",
+      },
+      { status: 500 }
+    );
+  }
 }

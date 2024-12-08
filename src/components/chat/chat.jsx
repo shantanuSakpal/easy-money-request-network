@@ -71,7 +71,7 @@ const Chatbot = () => {
 
   const sendMessage = async (text) => {
     try {
-      const response = await fetch("/api/chat", {
+      const response = await fetch("/api/tax-compliance", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
