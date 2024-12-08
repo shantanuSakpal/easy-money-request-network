@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Button, Card, CardBody, CardHeader, Chip } from "@nextui-org/react";
 
-function TaxComponent({ jsonData }) {
+export default function TaxComponent({ jsonData }) {
   const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -116,5 +116,3 @@ function TaxComponent({ jsonData }) {
     </div>
   );
 }
-
-export default TaxComponent;

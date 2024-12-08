@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { BiLoader } from "react-icons/bi";
 import { formatUnits } from "viem";
 import { useAccount } from "wagmi";
-import TaxComponent from "@/components/Cards/TaxComponent";
+import TaxComponent from "@/components/Cards/Taxcomponent";
 
 export default function Home() {
   const { address } = useAccount();
@@ -37,7 +37,9 @@ export default function Home() {
         fetchedRequests.map((request) => request.getData())
       );
 
-      const relevantData = requestData.map((request) => extractRelevantData(request));
+      const relevantData = requestData.map((request) =>
+        extractRelevantData(request)
+      );
 
       setRequests(requestData); // All requests for the table
       setRelevantDataGPT(relevantData); // Data for GPT analysis
@@ -59,9 +61,11 @@ export default function Home() {
     payee: request.payee.value,
     payer: request.payer.value,
     paymentAddress:
-      request.extensions["pn-eth-fee-proxy-contract"]?.values.paymentAddress || "N/A",
+      request.extensions["pn-eth-fee-proxy-contract"]?.values.paymentAddress ||
+      "N/A",
     feeAddress:
-      request.extensions["pn-eth-fee-proxy-contract"]?.values.feeAddress || "N/A",
+      request.extensions["pn-eth-fee-proxy-contract"]?.values.feeAddress ||
+      "N/A",
   });
 
   useEffect(() => {
@@ -82,7 +86,7 @@ export default function Home() {
           <>
             {/* Transaction Table */}
             <div className="px-20 min-h-screen">
-            <TaxComponent jsonData={relevantDataGPT} />
+              <TaxComponent jsonData={relevantDataGPT} />
               <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-lg">
                 <thead className="bg-gray-100">
                   <tr>
@@ -139,7 +143,6 @@ export default function Home() {
             </div>
 
             {/* TaxComponent for GPT analysis */}
-
           </>
         )
       ) : (
