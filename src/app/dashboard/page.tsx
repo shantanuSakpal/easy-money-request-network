@@ -1,24 +1,37 @@
 "use client";
 
-import { currencies } from "@/utils/currency";
+import { useState } from "react";
 import { RequestNetwork, Types } from "@requestnetwork/request-client.js";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { BiLoader } from "react-icons/bi";
 import { formatUnits } from "viem";
 import { useAccount } from "wagmi";
-import { Card, CardBody } from "@nextui-org/react";
+import { 
+  Card, 
+  CardBody, 
+  Button, 
+  Modal, 
+  ModalContent, 
+  ModalHeader, 
+  ModalBody, 
+  ModalFooter 
+} from "@nextui-org/react";
 import TaxComponent from "@/components/Cards/Taxcomponent";
-import { FaCopy , FaPaperPlane} from "react-icons/fa";
+import { FaCopy, FaPaperPlane, FaTimes } from "react-icons/fa";
 import { toast, Toaster } from 'react-hot-toast';
-import { Button } from "@nextui-org/react";
-
+import Chat from "@/components/chat/chat";
+import { currencies } from "@/utils/currency";
 
 export default function Home() {
   const { address } = useAccount();
   const userAddress: `0x${string}` = address!;
   const [loading, setLoading] = useState(false);
-  const [requests, setRequests] =
+  const [requests, setRequests] = 
     useState<(Types.IRequestDataWithEvents | undefined)[]>();
+  
+  // New state for chat modal
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [relevantDataGPT, setRelevantDataGPT] = useState<any[] | null>(null);
 
   const fetchRequests = async () => {
     console.log("getting requests");
@@ -40,13 +53,33 @@ export default function Home() {
         fetchedRequests.map((request) => request.getData())
       );
 
+      const relevantData = requestData.map((request) => extractRelevantData(request));
+
       setRequests(requestData);
+      setRelevantDataGPT(relevantData); 
     } catch (error) {
       console.error("Failed to fetch requests:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  const extractRelevantData = (request: Types.IRequestDataWithEvents) => ({
+    requestId: request.requestId,
+    currency: request.currencyInfo.type,
+    network: request.currencyInfo.network,
+    expectedAmount: formatUnits(request.expectedAmount, "ether"), // Assuming it's in wei
+    state: request.state,
+    reason: request.contentData?.reason || "No reason provided",
+    dueDate: request.contentData?.dueDate || "No due date",
+    payee: request.payee.value,
+    payer: request.payer.value,
+    paymentAddress:
+      request.extensions["pn-eth-fee-proxy-contract"]?.values.paymentAddress || "N/A",
+    feeAddress:
+      request.extensions["pn-eth-fee-proxy-contract"]?.values.feeAddress || "N/A",
+  });
+
 
   useEffect(() => {
     if (address) fetchRequests();
@@ -70,8 +103,13 @@ export default function Home() {
     });
   };
 
+  // Toggle chat modal
+  const toggleChatModal = () => {
+    setIsChatOpen(!isChatOpen);
+  };
+
   return (
-    <div>
+    <div className="relative">
       <Toaster position="bottom-right" />
       {address ? (
         loading ? (
@@ -83,13 +121,14 @@ export default function Home() {
           <div className="p-5 mx-24 h-screen">
             <div className="flex justify-between items-center">
               <h1 className="text-3xl font-bold m-4">Dashboard</h1>
-              <Button onClick={() => {}}>
-    <a href="/dashboard/tax-gpt">Try TaxGPT</a>
-    <FaPaperPlane />
-</Button>
-
+              <Button 
+                onClick={toggleChatModal} 
+                color={isChatOpen ? "default" : "primary"}
+              >
+                {isChatOpen ? "Close TaxGPT" : "Try TaxGPT"}
+                {isChatOpen ? <FaTimes /> : <FaPaperPlane />}
+              </Button>
             </div>
-
 
             <div className="min-w-screen">
               <TaxComponent jsonData={requests} />
@@ -173,6 +212,33 @@ export default function Home() {
           <p className="text-2xl">Please connect wallet</p>
         </div>
       )}
+
+      {/* Chat Modal */}
+      <Modal 
+        isOpen={isChatOpen} 
+        onOpenChange={toggleChatModal}
+        placement="right"
+        size="lg"
+        backdrop="blur"
+        className="h-[90%]"
+        classNames={{
+          base: "h-full rounded-xl min-w-[65%]  rounded-none",
+          wrapper: "items-stretch",
+          backdrop: "bg-black/50"
+        }}
+      >
+        <ModalContent className="rounded-2xl rounded">
+          {(onClose) => (
+            <>
+              <ModalBody >
+                <div className="pb-12 rounded-xl overflow">   
+                <Chat relevantData={relevantDataGPT} />
+                </div>
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

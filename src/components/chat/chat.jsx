@@ -52,12 +52,13 @@ const AssistantMessage = ({ text, logo, name }) => {
   );
 };
 
-const Chatbot = () => {
+const Chatbot = ({ relevantData }) => {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [inputDisabled, setInputDisabled] = useState(false);
   const [logo, setLogo] = useState("/easy-money-new-logo.png"); 
-  const [name, setName] = useState("Assistant");
+  const [name, setName] = useState("TaxGPT");
+  const [taxData, settaxData] = useState(relevantData);
 
   // automatically scroll to bottom of chat
   const messagesEndRef = useRef(null);
@@ -69,14 +70,14 @@ const Chatbot = () => {
     scrollToBottom();
   }, [messages]);
 
-  const sendMessage = async (text) => {
+  const sendMessage = async (text, taxdata) => {
     try {
       const response = await fetch("/api/tax-compliance", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({ message: text,  taxdata}),
       });
 
       if (!response.ok) {
@@ -111,7 +112,7 @@ const Chatbot = () => {
     ]);
 
     // Send message and disable input
-    sendMessage(userInput);
+    sendMessage(userInput, taxData);
     setUserInput("");
     setInputDisabled(true);
     scrollToBottom();
@@ -154,7 +155,7 @@ const Chatbot = () => {
           </div>
         ) : (
           <div className="flex justify-center items-center text-center text-gray-400 text-3xl w-full  my-auto mt-20">
-            <p className="w-full text-center">Imagination is the limit!</p>
+            <p className="w-full text-center">Ask your All Tax Related Doubts</p>
           </div>
         )}
       </div>
