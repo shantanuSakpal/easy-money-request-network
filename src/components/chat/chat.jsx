@@ -56,8 +56,8 @@ const Chatbot = ({ relevantData }) => {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [inputDisabled, setInputDisabled] = useState(false);
-  const [logo, setLogo] = useState("/easy-money-new-logo.png"); 
-  const [name, setName] = useState("TaxGPT");
+  const [logo, setLogo] = useState("/easy-money-new-logo.png");
+  const [name, setName] = useState("EasyFinance AI");
   const [taxData, settaxData] = useState(relevantData);
 
   // automatically scroll to bottom of chat
@@ -77,7 +77,7 @@ const Chatbot = ({ relevantData }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: text,  taxdata}),
+        body: JSON.stringify({ message: text, taxdata }),
       });
 
       if (!response.ok) {
@@ -85,16 +85,19 @@ const Chatbot = ({ relevantData }) => {
       }
 
       const data = await response.json();
-      
+
       setMessages((prevMessages) => [
         ...prevMessages,
-        { role: "assistant", text: data.message }
+        { role: "assistant", text: data.message },
       ]);
     } catch (error) {
       console.error("Error sending message:", error);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { role: "assistant", text: "Sorry, I encountered an error. Please try again." }
+        {
+          role: "assistant",
+          text: "Sorry, I encountered an error. Please try again.",
+        },
       ]);
     } finally {
       setInputDisabled(false);
@@ -108,7 +111,7 @@ const Chatbot = ({ relevantData }) => {
     // Add user message
     setMessages((prevMessages) => [
       ...prevMessages,
-      { role: "user", text: userInput }
+      { role: "user", text: userInput },
     ]);
 
     // Send message and disable input
@@ -136,26 +139,25 @@ const Chatbot = ({ relevantData }) => {
       <div className="flex flex-col items-start overflow-auto pl-5 w-full h-full text-sm">
         {messages.length > 0 ? (
           <div>
-            {messages.map((msg, index) => (
+            {messages.map((msg, index) =>
               msg.role === "user" ? (
-                <UserMessage 
-                  key={index} 
-                  text={msg.text} 
-                />
+                <UserMessage key={index} text={msg.text} />
               ) : (
-                <AssistantMessage 
-                  key={index} 
-                  text={msg.text} 
+                <AssistantMessage
+                  key={index}
+                  text={msg.text}
                   logo={logo}
                   name={name}
                 />
               )
-            ))}
+            )}
             <div ref={messagesEndRef} />
           </div>
         ) : (
           <div className="flex justify-center items-center text-center text-gray-400 text-3xl w-full  my-auto mt-20">
-            <p className="w-full text-center">Ask your All Tax Related Doubts</p>
+            <p className="w-full text-center">
+              Ask your All Tax Related Doubts
+            </p>
           </div>
         )}
       </div>

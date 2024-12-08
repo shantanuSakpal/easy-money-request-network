@@ -6,42 +6,37 @@ import { useEffect } from "react";
 import { BiLoader } from "react-icons/bi";
 import { formatUnits } from "viem";
 import { useAccount } from "wagmi";
-import { 
-  Card, 
-  CardBody, 
-  Button, 
-  Modal, 
-  ModalContent, 
-  ModalHeader, 
-  ModalBody, 
-  ModalFooter 
+import {
+  Card,
+  CardBody,
+  Button,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "@nextui-org/react";
 import TaxComponent from "@/components/Cards/Taxcomponent";
 import { FaCopy, FaPaperPlane, FaTimes } from "react-icons/fa";
-import { toast, Toaster } from 'react-hot-toast';
+import { toast, Toaster } from "react-hot-toast";
 import Chat from "@/components/chat/chat";
 import { currencies } from "@/utils/currency";
+import { requestClient } from "@/utils/requestClient";
 
 export default function Home() {
   const { address } = useAccount();
   const userAddress: `0x${string}` = address!;
   const [loading, setLoading] = useState(false);
-  const [requests, setRequests] = 
+  const [requests, setRequests] =
     useState<(Types.IRequestDataWithEvents | undefined)[]>();
-  
+
   // New state for chat modal
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [relevantDataGPT, setRelevantDataGPT] = useState<any[] | null>(null);
 
   const fetchRequests = async () => {
-    console.log("getting requests");
+    console.log("getting requests for ------ ", address);
     setLoading(true);
-
-    const requestClient = new RequestNetwork({
-      nodeConnectionConfig: {
-        baseURL: "https://sepolia.gateway.request.network/",
-      },
-    });
 
     try {
       const fetchedRequests = await requestClient.fromIdentity({
@@ -49,14 +44,18 @@ export default function Home() {
         value: userAddress,
       });
 
+      console.log("fetched", fetchedRequests);
+
       const requestData = await Promise.all(
         fetchedRequests.map((request) => request.getData())
       );
 
-      const relevantData = requestData.map((request) => extractRelevantData(request));
+      const relevantData = requestData.map((request) =>
+        extractRelevantData(request)
+      );
 
       setRequests(requestData);
-      setRelevantDataGPT(relevantData); 
+      setRelevantDataGPT(relevantData);
     } catch (error) {
       console.error("Failed to fetch requests:", error);
     } finally {
@@ -75,11 +74,12 @@ export default function Home() {
     payee: request.payee.value,
     payer: request.payer.value,
     paymentAddress:
-      request.extensions["pn-eth-fee-proxy-contract"]?.values.paymentAddress || "N/A",
+      request.extensions["pn-eth-fee-proxy-contract"]?.values.paymentAddress ||
+      "N/A",
     feeAddress:
-      request.extensions["pn-eth-fee-proxy-contract"]?.values.feeAddress || "N/A",
+      request.extensions["pn-eth-fee-proxy-contract"]?.values.feeAddress ||
+      "N/A",
   });
-
 
   useEffect(() => {
     if (address) fetchRequests();
@@ -87,18 +87,18 @@ export default function Home() {
 
   // Function to get unique payers
   const getUniquePayers = () => {
-    const payerSet = new Set(requests?.map(req => req?.payer?.value));
+    const payerSet = new Set(requests?.map((req) => req?.payer?.value));
     return Array.from(payerSet);
   };
 
   // Copy to clipboard function
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
-      toast.success('Address copied!', {
+      toast.success("Address copied!", {
         style: {
-          background: '#333',
-          color: '#fff',
-        }
+          background: "#333",
+          color: "#fff",
+        },
       });
     });
   };
@@ -118,14 +118,14 @@ export default function Home() {
             <p className="text-xl">Fetching data...</p>
           </div>
         ) : (
-          <div className="p-5 mx-24 h-screen">
+          <div className="p-5 mx-24 ">
             <div className="flex justify-between items-center">
               <h1 className="text-3xl font-bold m-4">Dashboard</h1>
-              <Button 
-                onClick={toggleChatModal} 
+              <Button
+                onClick={toggleChatModal}
                 color={isChatOpen ? "default" : "primary"}
               >
-                {isChatOpen ? "Close TaxGPT" : "Try TaxGPT"}
+                {isChatOpen ? "Close EasyFinance AI" : "Try EasyFinance AI"}
                 {isChatOpen ? <FaTimes /> : <FaPaperPlane />}
               </Button>
             </div>
@@ -138,7 +138,13 @@ export default function Home() {
                 <table className="min-h-[50%] min-w-full bg-white rounded-lg overflow-hidden shadow-lg text-base">
                   <thead className="bg-gray-100">
                     <tr>
-                      {["Request ID", "Payer", "Currency", "Amount", "Reason"].map((header, index) => (
+                      {[
+                        "Request ID",
+                        "Payer",
+                        "Currency",
+                        "Amount",
+                        "Reason",
+                      ].map((header, index) => (
                         <th
                           key={index}
                           className="px-6 py-3 text-left text-sm font-medium text-gray-600 uppercase tracking-wider"
@@ -186,14 +192,18 @@ export default function Home() {
               <div className="w-1/4">
                 <Card className="h-full">
                   <CardBody>
-                    <h2 className="text-xl font-semibold mb-4">Unique Payer Addresses</h2>
+                    <h2 className="text-xl font-semibold mb-4">
+                      Unique Payer Addresses
+                    </h2>
                     <div className="space-y-2 overflow-y-auto max-h-96">
                       {getUniquePayers().map((payer, index) => (
                         <div
                           key={index}
                           className="bg-gray-100 p-3 rounded-lg text-sm flex justify-between items-center"
                         >
-                          <span>{payer?.slice(0, 6)}...{payer?.slice(-4)}</span>
+                          <span>
+                            {payer?.slice(0, 6)}...{payer?.slice(-4)}
+                          </span>
                           <FaCopy
                             className="text-gray-500 hover:text-gray-700 cursor-pointer"
                             onClick={() => copyToClipboard(payer!)}
@@ -214,8 +224,8 @@ export default function Home() {
       )}
 
       {/* Chat Modal */}
-      <Modal 
-        isOpen={isChatOpen} 
+      <Modal
+        isOpen={isChatOpen}
         onOpenChange={toggleChatModal}
         placement="right"
         size="lg"
@@ -224,15 +234,15 @@ export default function Home() {
         classNames={{
           base: "h-full rounded-xl min-w-[65%]  rounded-none",
           wrapper: "items-stretch",
-          backdrop: "bg-black/50"
+          backdrop: "bg-black/50",
         }}
       >
         <ModalContent className="rounded-2xl rounded">
           {(onClose) => (
             <>
-              <ModalBody >
-                <div className="pb-12 rounded-xl overflow">   
-                <Chat relevantData={relevantDataGPT} />
+              <ModalBody>
+                <div className="pb-12 rounded-xl overflow">
+                  <Chat relevantData={relevantDataGPT} />
                 </div>
               </ModalBody>
             </>
