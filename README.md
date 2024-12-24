@@ -48,3 +48,14 @@ Organizations struggle with:
 - **Bounty payments**
 - **Grant distributions**
 - **DAO operations**
+
+## 👀 Quick peek
+
+![landing page](image.png)
+![add recipients](image-4.png)
+![invoice preview](image-5.png)
+![AI dashboard](image-6.png)
+
+## For more info
+
+[View project on dorahacks](https://dorahacks.io/buidl/20482)
